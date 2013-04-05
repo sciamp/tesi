@@ -1,14 +1,33 @@
 \documentclass[pdftex,10pt,a4paper]{report}
 \usepackage[pdftex]{graphicx}
+\usepackage{wrapfig}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \usepackage[italian]{babel}
-%% \usepackage{indentfirst}
-%% \usepackage{enumerate} % permette di scegliere il tipo di elenco
-%%                        % (lettere, numeri arabi, romani..)
+\usepackage{indentfirst}
+\usepackage{enumerate} % permette di scegliere il tipo di elenco
+                       % (lettere, numeri arabi, romani..)
 \usepackage[margin=1in]{geometry} % margini stretti
+
+\usepackage{amssymb}
+\usepackage{latexsym}
+
+\usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{teo}{Teorema}[chapter] % mettendo section conta i teoremi
+                                % con #capitolo.#sezione.#teorema
+                                % mentre con chapter #cap.#teo
+\newtheorem{prop}[teo]{Proposizione}
+\newtheorem{cor}[teo]{Corollario}
+\newtheorem{lemma}[teo]{Lemma}
+\theoremstyle{definition}
+\newtheorem{defn}{Definizione}[chapter]
+\theoremstyle{remark}
+\newtheorem{oss}{Osservazione}[chapter]
+\newtheorem{notaz}{Notazione}[chapter]
 
 \graphicspath{ {./images/} }
 
 \begin{document}
-\include{titolo}  
+\include{titolo}
+\include{definizioni}
 \end{document}
