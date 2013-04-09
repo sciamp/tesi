@@ -34,7 +34,8 @@ lunghezza $n_k,\ldots,n_2,n_1$ da sinistra verso destra in quest'ordine.
 \caption{Un diagramma di Young ed il suo coniugato.}
 \end{figure}
 
-Possiamo calcolare il diagramma coniugato con
+Possiamo calcolare il diagramma coniugato con la funzione
+\emph{ydiagram\_transpose\_rows}:
 
 \begin{alltt}
 \emph{remove\_diagram\_column} (r, l) := 
@@ -47,6 +48,9 @@ else block (
 
 \emph{ydiagram\_transpose\_rows} (d) := \emph{remove\_diagram\_column} (d, []);
 \end{alltt}
+
+La funzione \emph{remove\_diagram\_column} toglie la colonna pi\`u a
+sinistra del diagramma e la inserisce come ultima riga del diagramma coniugato.
 
 \begin{notaz}
 Scriveremo $\lambda \vdash n$ intendendo che $\lambda$ \`e una
