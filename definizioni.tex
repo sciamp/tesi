@@ -123,6 +123,10 @@ l'elemento da sostituire oppure aggiungendo una nuova entrata in coda.
 Restituisce la riga modificata con, eventualmente, l'elemento da
 inserire nella riga successiva.
 
+La funzione \emph{rec\_ytableau\_word\_bump} esegue il row bumping
+fino a quando \`e possibile, e se necessario aggiunge una nuova riga
+al tableau.
+
 \begin{alltt}
 \emph{rec\_bump\_row} (r, x, i) :=
 if (x >= last (r)) then [append (r, [x]), 0]
@@ -133,8 +137,6 @@ else block (
   r[i+1] : x,
   return ([r, next\_x]));
 
-/* t should be T@word */
-/* i should be length (t) */
 \emph{rec\_ytableau\_word\_bump} (t, x, i) :=
 if (x > 0) then block (
   [],
@@ -142,7 +144,7 @@ if (x > 0) then block (
     [next\_b],
     next\_b : \emph{rec\_bump\_row} (t[i], x, length (t[i])),
     t[i] : next\_b[1],
-    return (\emph{rec\_ytableau\_word\_bump} (t, next_b[2], i-1)))
+    return (\emph{rec\_ytableau\_word\_bump} (t, next\_b[2], i-1)))
   else return (append ([[x]], t)))
 else t;
 \end{alltt}
