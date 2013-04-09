@@ -278,5 +278,38 @@ y \cdot z \cdot x \rightsquigarrow z \cdot y \cdot x \mbox{ se } y
 \leq x < z
 \end{equation}
 
-che corrispondono a
+\begin{defn}[Trasformazione elementare di Knuth]
+Una trasformazione di una parola si dice elementare di Knuth se
+applica a tre lettere consecutive la trasformazione \eqref{k1},
+\eqref{k2} o una delle loro inverse.
+\end{defn}
 
+\begin{defn}[Knuth-equivalenti]
+Due parole $w$ e $w'$ si dicono Knuth-equivalenti, e si scrive $w
+\equiv w'$ se \`e possibile ottenere una dall'altra, e viceversa, per
+mezzo di sole trasformazioni elementari di Knuth.
+\end{defn}
+%% \newpage % tornava brutto con l'immagine alla pagina dopo
+\begin{oss}
+Le trasformazioni fondamentali \eqref{k1} e \eqref{k2} sono coerenti
+con il row bumping, infatti
+
+\begin{figure}[h]
+\centering
+
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=0.2\textwidth]{KnuthK1}
+\eqref{k1} $x < y \leq z$
+%% \label{fig:awesome_image}
+\end{subfigure}%
+\begin{subfigure}[b]{0.4\textwidth}
+\centering
+\includegraphics[height=0.2\textwidth]{KnuthK2}
+\eqref{k2} $y \leq x < z$
+\end{subfigure}
+
+\caption{Trasformazioni fondamentali}
+\end{figure}
+
+\end{oss}
