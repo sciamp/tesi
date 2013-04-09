@@ -1,12 +1,25 @@
-\documentclass[pdftex,10pt,a4paper]{report}
+\documentclass[pdftex,12pt,a4paper]{report}
 \usepackage[pdftex]{graphicx}
-\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+%% \usepackage{wrapfig}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \usepackage[italian]{babel}
 \usepackage{indentfirst}
 \usepackage{enumerate} % permette di scegliere il tipo di elenco
                        % (lettere, numeri arabi, romani..)
 \usepackage[margin=1in]{geometry} % margini stretti
+
+\usepackage{alltt} % tipo verbatim ma accetta comandi tipo \emph{...}
+
+\usepackage{amsmath} % \eqref{}
+
+%% custom chapters
+\usepackage{titlesec}
+%% Questo stampa 1. Nomecapitolo, invece che
+%% Capitolo 1.
+%% Nomecapitolo
+\titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter.}{20pt}{\huge}
 
 \usepackage{amssymb}
 \usepackage{latexsym}
@@ -24,6 +37,7 @@
 \theoremstyle{remark}
 \newtheorem{oss}{Osservazione}[chapter]
 \newtheorem{notaz}{Notazione}[chapter]
+\newtheorem{ex}{Esempio}[chapter]
 
 \graphicspath{ {./images/} }
 
