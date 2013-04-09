@@ -137,7 +137,7 @@ if (x > 0) then block (
   [],
   if (i > 0) then block (
     [next\_b],
-    next\_b : \emph{rec\_ytableau\_word\_bump} (t[i], x, length (t[i])),
+    next\_b : \emph{rec\_bump\_row} (t[i], x, length (t[i])),
     t[i] : next\_b[1],
     return (\emph{rec\_ytableau\_word\_bump} (t, next_b[2], i-1)))
   else return (append ([[x]], t)))
