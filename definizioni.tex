@@ -31,8 +31,22 @@ lunghezza $n_k,\ldots,n_2,n_1$ da sinistra verso destra in quest'ordine.
 \raisebox{0.2\height}{\includegraphics[height=0.35\textwidth,angle=90]{YoungDiagramFlip}}
 \caption{$\tilde{\lambda}=(1,2,3,4)$}
 \end{subfigure}
-\caption{Diagrammi e diagrammi coniugati.}
+\caption{Un diagramma di Young ed il suo coniugato.}
 \end{figure}
+
+Possiamo calcolare il diagramma coniugato con
+
+\begin{alltt}
+\emph{remove\_diagram\_column} (r, l) := 
+if emptyp (r) then return (l)
+else block (
+  l : append ([length (r)], l),
+  r : r-1,
+  r : delete (0, r),
+  return (\emph{remove\_diagram\_column} (r, l)));
+
+\emph{ydiagram\_transpose\_rows} (d) := \emph{remove\_diagram\_column} (d, []);
+\end{alltt}
 
 \begin{notaz}
 Scriveremo $\lambda \vdash n$ intendendo che $\lambda$ \`e una
