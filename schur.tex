@@ -84,7 +84,28 @@ else ts;
   return (pol));
 \end{alltt}
 
-Il cuore dell'algoritmo
-\emph{yschur\_monomial\_word\_recursive} aggiunge al prodotto per ogni lettera $i$
-della parola di un tableau il corrispondente fattore $x_i$.
- 
+Il cuore dell'algoritmo risiede nella funzione
+\emph{fl\_list\_transposed\_ytableaux} che calcola tutti i
+possibili tableaux su un dato diagramma $\lambda$. Dal momento che la
+definizione \eqref{ytab} pone una condizione
+lungo le colonne pi\`u stringente della non decrescenza sulle
+righe, calcoliamo i possibili riempimenti del diagramma coniugato
+$\tilde{\lambda}$, cos\`i facendo gi\`a dalla prima riga (ovvero la
+prima colonna di $\lambda$) riduciamo il numero di riempimenti da
+provare.\\
+Il riempimento della prima riga avviene da sinistra verso destra
+attingendo da $[m]=\{1,\ldots, m\}$ in modo tale che se inseriamo $k \in
+[m]$ in posizione $i$-esima, e la prima riga \`e lunga $l_1$, esistano
+$k_1,\ldots,k_{l_1-1} \in [m]$ tutti maggiori di $k$. Generiamo quindi
+una lista di possibili riempimenti della prima riga, ognuno dei quali
+dar\`a luogo ad una lista di possibili riempimenti delle prime due
+righe, e cos\`i via.\\ 
+Naturalmente riempiendo la riga $j$-esima, alla
+posizione $i$ dovremo scegliere $k \in [m]$ tale che esistano
+$k_1,\ldots,k_{l_j-1} \in [m]$ tutti maggiori di $k$ e tutti non
+minori dell'elemento in posizione $i$-esima della riga
+$(j-1)$-esima.\\
+Ottenuta infine la lista dei possibili tableaux su $\lambda$ la
+funzione \emph{yschur\_monomial\_word\_recursive} calcola il
+corrispondente monomio, la somma di questi monomi \`e il polinomio di
+Schur cercato $s_\lambda(x_1,\ldots,x_m)$.
