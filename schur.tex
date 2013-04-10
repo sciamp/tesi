@@ -11,3 +11,80 @@ s_\lambda(x_1,\ldots,x_m) = \sum x^T
 \end{math}
 che chiameremo polinomio di Schur.
 \end{defn}
+
+\section{Anello dei tableau}
+
+HO LASCIATO GLI APPUNTI A CASA, CRIBBIO!
+
+\section{Implementazione dei polinomi di Schur}
+
+\begin{alltt}
+\emph{yschur\_monomial\_word\_recursive} (flat\_w, mon, i) := block (
+  [x],
+  if (i>0) then return (\emph{yschur\_monomial\_word\_recursive} (flat\_w,
+                                                        mon*x[flat\_w[i]],
+                                                        i-1))
+  else return (mon));
+
+\emph{last\_or\_zero} (l) := if emptyp (l) then 0 else last(l);
+
+\emph{fill\_next\_line} (len, m, prev, ls) := block (
+  [],
+  if (len = 0) then return (ls)
+  else block (
+    [p],
+    p : [],
+    for x in ls do p : append (p,
+                               makelist (append (x, [y]),
+                               y,
+                               max (\emph{last\_or\_zero} (x) + 1,
+                                    prev[length (x)+1]),
+                               m - len + 1)),
+    return (\emph{fill\_next\_line} (len - 1, m, prev, p))));
+
+
+\emph{fl\_fill\_line} (len, m, ls) :=
+if (len=0) then ls
+else \emph{fl\_fill\_line} (len-1, m, xreduce ('append, 
+                                       makelist (makelist (append (x, [y]),
+                                                 y,
+                                                 \emph{last\_or\_zero} (x) + 1,
+                                                 m - len +1), x,
+                                                 ls)));
+
+\emph{fl\_list\_transposed\_ytableaux} (shape, level, m, ts) :=
+if level < length (shape) then
+  if level > 0 then
+    if not emptyp (flatten (ts)) then block (
+      [nls,ts\_first],
+      ts\_first : first (ts),
+      ts : delete (ts\_first, ts),
+      nls : \emph{fill\_next\_line} (shape [level+1], m,
+                            rest (ts\_first, -length(ts\_first)+shape[level]),
+                            [[]]),
+      ts : append (ts, map (lambda ([x], append (x, ts\_first)), nls)),
+      if every (lambda ([x],
+                        is (length (flatten (x)) = length (flatten
+                        (first (ts))))),
+                ts) then level : (level + 1),
+      \emph{fl\_list\_transposed\_ytableaux} (shape, level, m, ts))
+    else []
+  else \emph{fl\_list\_transposed\_ytableaux} (shape, level + 1, m,
+                                     \emph{fl\_fill\_line} (shape[level + 1], m, ts))
+else ts;
+
+\emph{fl\_better\_yschur\_polynomial} (d, m) := block (
+  [ts, pol, shape],
+  shape : reverse ((\emph{ydiagram\_transpose} (d))@rows),
+  print (shape),
+  ts : \emph{fl\_list\_transposed\_ytableaux} (shape, 0, m, [[]]),
+  pol : 0,
+  for i : 1 thru length (ts) do
+    pol : pol + \emph{yschur\_monomial\_word\_recursive} (ts[i], 1, length (ts[i])),
+  return (pol));
+\end{alltt}
+
+Il cuore dell'algoritmo
+\emph{yschur\_monomial\_word\_recursive} aggiunge al prodotto per ogni lettera $i$
+della parola di un tableau il corrispondente fattore $x_i$.
+ 
