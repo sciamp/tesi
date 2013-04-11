@@ -1,1 +1,117 @@
 \chapter{Regola di Littlewood-Richardson}
+
+\begin{prop}
+Sia
+\begin{math}
+\begin{bmatrix}
+u_1 & \ldots & u_m\\
+v_1 & \ldots & v_m
+\end{bmatrix}
+\end{math}
+in ordine lessicografico e corrispondente secondo
+Robinson-Schensted-Knuth alla coppia di tableaux $(P,Q)$. Dato un
+qualsiasi tableau $T$ inseriamo gli elementi della seconda riga
+$T' = ((\ldots (T \gets v_1) \gets \ldots ) \gets v_{m-1} ) \gets v_m$ e
+collochiamo successivamente gli $u_1, \ldots, u_m$ in un diagramma
+vuoto nelle posizioni occupate dai corrispettivi $v_i$ in $T'$,
+otteniamo quindi uno skew tableu $S$.\\
+Lo skew tableau $S$ si rettifica a $Rect(S)=U$.
+\end{prop}
+
+Dati tre diagrammi di Young $\lambda \vdash n$, $\mu \vdash m$ e $\nu
+\vdash r$ ci chiediamo in quanti modi un tableau $V$ che riempie
+$\nu$ pu\`o essere scritto come prodotto di due tableaux $T$ e $U$
+che riempiono rispettivamente $\lambda$ e $\mu$.
+
+\begin{oss}
+Affinch\'e una tale fattorizzazione esista (ovvero affinch\'e il numero
+di modi sia non nullo) \`e necessario che siano verificate le seguenti
+condizioni:
+\begin{enumerate}[(i)]
+\item $r = n + m$
+\item $\lambda \subset \nu$
+\end{enumerate}
+\end{oss}
+
+\begin{defn}
+Dati due tableaux $U_0$ e $V_0$ di forma $\mu$ e $\nu$
+rispettivamente, definiamo
+\begin{center}\begin{math}
+\mathcal{S}(\nu/\lambda, U_0) = \{\text{skew tableaux } S \text{ su
+}\nu/\lambda \text{ tali che } Rect(S) =U_0\}
+\end{math}\\
+\begin{math}
+\mathcal{T}(\lambda, \mu, V_0)=\{(T,U) \mid T \text{ tableau su }
+\lambda, U \text{ tableau su } \mu, T\cdot U=V_0\}.
+\end{math}\end{center}
+\end{defn}
+
+\begin{prop}
+Per ogni tableau $U$ che riempie $\mu$ e ogni tableau $V$ su $\nu$
+esiste una corrispondenza biunivoca tra gli insiemi $\mathcal{T}(\lambda, \mu, V)$
+e $\mathcal{S}(\nu/\lambda, U)$
+\end{prop}
+
+Da cui l'importante
+
+\begin{cor}
+$ | \mathcal{S}(\nu/\lambda, U_0) |$ e $| \mathcal{T}(\lambda, \mu,
+  V_0) |$ non dipendono da $U_0$ e $V_0$ ma solamante da $\lambda$,
+  $\mu$ e $\nu$.
+\end{cor} 
+
+\begin{defn}[Numeri di Littlewood-Richardson]
+Chiamiamo numeri di Littlewood-Richardson $ c_{\lambda \mu}^{\nu} = |
+\mathcal{S}(\nu/\lambda, U_0) | = | \mathcal{T}(\lambda, \mu, V_0) |$.
+\end{defn}
+
+\begin{cor}
+In $R_{[m]}$ vale $S_{\lambda}[m] \cdot S_{\mu}[m] =
+\sum\limits_{\nu} c_{\lambda \mu}^{\nu} S_{\nu}[m]$.
+\end{cor}
+
+\begin{oss}
+Applicando al corollario precedente l'omomorfismo \eqref{ring_tab}
+otteniamo
+\begin{center}\begin{math}
+s_{\lambda}(x_1,\ldots,x_m) \cdot s_{\mu}(x_1,\ldots,x_m) =
+\sum\limits_{\nu} c_{\lambda \mu}^{\nu} s_{\nu}(x_1,\ldots,x_m)
+\end{math}\end{center}
+che ci permette di esprimere il prodotto di due polinomi di Schur come
+combinazione lineare di altri polinomi di Schur dove i coefficienti
+sono proprio i numeri di Littlewood-Richardson.
+\end{oss}
+
+\section{Un algoritmo per i numeri di Littlewood-Richardson}
+Nella definizione dei numeri di Littlewood-Richardson non viene
+fornita una procedura di calcolo esplicita, tuttavia \`e possibile
+ricavarne una dalla descrizione che segue.
+
+\begin{defn}[Reverse lattice word]
+Una parola $w=x_1\ldots x_r$, con $x_i$ interi positivi, si dice una reverse lattice word se per
+ogni $1 \leq k \leq r$ si ha che il numerio di lettere presenti in
+$\bar w_k = x_r,\ldots,x_k$ uguali a $i$ \`e
+al pi\`u uguale al numero di lettere uguali a $i-1$ per ogni $i \geq
+1$.
+\end{defn}
+
+\begin{defn}[Skew tableau di Littlewood-Richardson]
+Uno skew tableau si dice di Littlewood-Richardson se la sua parola
+$w(T)$ \`e una reverse lattice word.
+\end{defn}
+
+\begin{defn}[Contenuto di un tableau o di uno skew tableau]
+Un tableau o uno skew tableau ha contenuto $\mu = (\mu_1, \ldots,
+\mu_h)$ se le sue entrate sono costituite da $\mu_1$ volte $1$,
+\ldots, $\mu_h$ volte $h$.
+\end{defn}
+
+\begin{oss}
+Possiamo sempre supporre, a meno di riordinare $\mu_1, \ldots,\mu_h$,
+che $\mu$ sia una partizione (e quindi un diagramma di Young).
+\end{oss}
+
+\begin{prop}
+Il numero di skew tableaux di Littlewood-Richardson che riempiono lo
+skew diagram $\nu/\lambda$ con contenuto $\mu$ \`e $c_{\lambda \mu}^{\nu}$.
+\end{prop}
