@@ -118,3 +118,41 @@ skew diagram $\nu/\lambda$ con contenuto $\mu$ \`e $c_{\lambda \mu}^{\nu}$.
 
 Vediamo l'implementazione:
 \input{lrsourcecode}
+
+Dati tre diagrammi di Young $\nu$,$\lambda$ e $\mu$ la funzione
+\emph{littlewood\_richardson\_num} restituisce una lista contenente
+tutti i possibili skew tableau di Littlewood-Richardson che riempiono
+$\nu/\lambda$ con contenuto $\mu$. Dal momento che nel riempire lo
+skew diagram dobbiamo costruire una reverse lattice word, lavoriamo
+con i diagrammi coniugati e riempiamo lo skew diagram
+$\tilde{\nu}/\tilde{\lambda}$ (coniugato di $\nu/\lambda$).
+Il funzionamento \`e analogo a quello dell'algoritmo per il calcolo
+dei polinomi di Schur: si calcolano i possibili riempimenti, coerenti
+con i requisiti di reverse lattice word e di Young tableau, di un
+elemento e per ognuno di essi si calcolano i possibili riempimenti
+dell'elemento successivo, abbandonando di volta in volta eventuali
+riempimenti impossibili, fino a quando abbiamo una lista di
+riempimenti (completi) dello skew diagram $\tilde{\nu}/\tilde{\lambda}$.
+
+La funzione \emph{fill\_first\_line} che si occupa di riepire la prima
+colonna dello skew taleau $\tilde{\nu}/\tilde{\lambda}$ con 1, infatti:
+
+\begin{oss}
+La prima riga di uno skew tableau di Littlewood-Richardson ha tutte le
+entrate pari a 1.
+\begin{proof}
+L'ultimo elemento della prima riga deve necessariamente essere pari a
+1, altrimenti la parola risultante non terminerebbe per 1 e non
+sarebbe quindi una reverse lattice word. Allora poich\'e le entrate
+devono rispettare la (i) della definizione \ref{ytab} gli altri
+elementi della prima riga, precedendo l'ultimo elemento, devono
+necessariamente essere pari a 1.
+\end{proof}
+\end{oss}
+%% da commentare la funzione fill_first_line
+%% /* Remark: in filling a transposed Littlewood-Richardson skew tableau, beginning from bottom left */
+%% /* we must start with 1 (otherwise the corresponding word is not a lattice word, and hence the corresponding */
+%% /* word of the skew tableau is not a reverse lattice word). For preserving the structure of the tableau */
+%% /* the first column should be filled with ones. */
+%% /* A proof of this remark is in my thesis (http://linkgoeshere). */
+%% /* st should be a transposed generic skew tableau, fst should be [] and level should be 1. */
