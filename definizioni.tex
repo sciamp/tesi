@@ -347,11 +347,12 @@ Siano $T$ un tableau e $x$ un intero positivo, allora $w(T \gets x) = w(T)
 \end{prop}
 
 Data una parola $w = x_1 \ldots x_k$ possiamo sempre costruire un
-tableau calcolando $T = (( \ldots ((\varnothing \gets x_1) \gets x_2 ) \gets \ldots ) \gets x_{k-1} )
+tableau, per mezzo di quella che viene detta \emph{procedura canonica}
+calcolando $T = (( \ldots ((\varnothing \gets x_1) \gets x_2 ) \gets \ldots ) \gets x_{k-1} )
 \gets x_k$. Il tableau ottenuto ha parola $w(T)$ Knuth-equivalente a
 $w$.
 
-\begin{teo}
+\begin{teo}\label{knuth_equiv_word}
 Ogni parola \`e Knuth-equivalente alla parola di un unico tableau.
 \end{teo}
 

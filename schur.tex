@@ -14,7 +14,34 @@ che chiameremo polinomio di Schur.
 
 \section{Anello dei tableau}
 
-HO LASCIATO GLI APPUNTI A CASA, CRIBBIO!
+Sia $W_{[m]}$ l'insieme delle parole sull'alfabeto $[m]$ e sia
+$\sim_K$ la relazione di Knuth-equivalenza. $M_{[m]} =
+\frac{W_{[m]}}{\sim_K}$ \`e l'insieme delle classi di equivalenza,
+definiamo in $M_{[m]}$ un'operazione di prodotto attraverso la giustapposizione di parole e
+osseriviamo che \`e ben definito, infatti se $v \sim_K v'$ e $u \sim_K
+u'$ si ha $v \cdot u \sim_K v' \cdot u \sim_K v \cdot u'$. In
+definitiva $(M, \cdot, \varnothing)$, dove $\varnothing$ \`e la
+parola vuota, \`e un monoide che, per il
+teorema \eqref{knuth_equiv_word}, possiamo identificare con il monoide
+dei tableaux.
+
+Il monoide $M$ ha un anello associato (dettagli su Algebra
+S.Lang) che chiameremo \emph{anello dei tableaux}, e indicheremo con
+$R_{[m]}$ e che \`e uno $\mathbb{Z}$-modulo libero generato dai
+tableaux ad entrate in $[m]$ con prodotto il prodotto di tableaux.
+Resta quindi definito un omomorfismo
+\begin{center}
+\begin{math}
+\begin{matrix}
+\psi: & R_{[m]} & \rightarrow  & \mathbb{Z}[x_1,\ldots,x_m]\\
+& T      & \mapsto & \psi(T)=x^T
+\end{matrix}
+\end{math}
+\end{center}
+Indichiamo con $S_\lambda[m] \in R_{[m]}$ la somma di tutti i tableaux
+che riempiono il diagramma $\lambda$, allora
+$\psi(S_\lambda[m])=s_\lambda(x_1,\ldots,x_m)$ \`e il polinomio di
+Schur corrispondente alla partizione $\lambda$ con $m$ variabili.
 
 \section{Implementazione dei polinomi di Schur}
 
@@ -109,3 +136,44 @@ Ottenuta infine la lista dei possibili tableaux su $\lambda$ la
 funzione \emph{yschur\_monomial\_word\_recursive} calcola il
 corrispondente monomio, la somma di questi monomi \`e il polinomio di
 Schur cercato $s_\lambda(x_1,\ldots,x_m)$.
+
+% Non sono sicuro di doverne parlare. Per ora lascio in sospeso.
+%% \section{Corrispondenza di Robinson-Schensted-Knuth}
+%% Data una parola $w=x_1\ldots x_r$ indichiamo con $P(w)$ l'\emph{unico} tableau con
+%% parola Knuth-equivalente a $w$ (teorema \eqref{knuth_equiv_word}). Un
+%% modo per ottenede $P(w)$ data $w$ \`e la \emph{procedura canonica}
+%% vista nel capitolo precedente. Mentre costruiamo il tableau $P(w)$
+%% teniamo traccia delle posizioni in cui stiamo inserendo le lettere di
+%% $w$ costruendo un'altra tabella $Q(w)$ della stessa forma di $P(w)$
+%% inserendo $k$ in posizione $Q(w)^i_j$ ogniqualvolta inseriamo $x_k$
+%% nella riga $i$-esima alla colonna $j$-esima del tableau $P(w)$. Dunque
+%% se stiamo costruendo $P_k=P(x_1\ldots x_k)=P_{k-1} \gets x_k =
+%% ((\ldots (\varnothing \gets x_1) \gets \ldots ) \gets x_{k-1} ) \gets
+%% x_k$ inseriremo $k$ in $Q_k=Q(x_1 \ldots x_k)$ in corrispondenza della posizione
+%% presente in $P_k$ ma non in $P_{k-1}$.
+
+%% \begin{oss}
+%% Ad ogni passo $1 \leq k \leq r$ della procedura canonica, $Q_k$ \`e un
+%% tableau standard.
+%% %% \begin{proof}
+%% %% Chiaramente le entrate di $Q(w)$ sono tutte distinte fra loro essendo
+%% %% indici delle lettere della parola $w$. Supponiamo che $Q_k$ sia un
+%% %% tableau standard, si hanno tre casi:\\
+%% %% $x_k < x_{k+1}$: \\
+%% %% $x_k = x_{k+1}$:\\
+%% %% $x_k > x_{k+1}$:\\
+%% %% \end{proof}
+%% \end{oss}
+
+%% Essendo note le posizioni in cui sono state inserite le varie lettere,
+%% da $(P(w),Q(w))$ possiamo ricostruire $w$, questo significa che data
+%% una qualunque coppia di tableaux $(P,Q)$ che riempiono lo stesso
+%% diagramma con $Q$ standard esiste una parola $\bar w$ tale che
+%% $(P,Q)=(P(\bar w),Q(\bar w))$.\\
+%% Abbiamo cos\`i una corrispondenza
+%% biunivoca fra le lettere $w$ di lunghezza $r$ con lettere
+%% nell'alfabeto $[n]$ e le coppie $(P,Q)$ di tableaux riempimenti dello
+%% stesso diagramma $\lambda \vdash r$ con $P$ ad entrate in $[n]$ e $Q$
+%% standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
+%% tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
+%% \`e uno standard tableau e viceversa.
