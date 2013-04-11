@@ -1,8 +1,7 @@
 \begin{alltt}
-/* We should check that the three diagrams are suitable for Littlewood Richardson */
-/* rev_big_shape, rev_small_shape are reversed words of diagrams */
-/* gen_skew_tab should be [], and curr should be 1 */
-\emph{generic\_skew\_tableau} (rev\_big\_shape, rev\_small\_shape, gen\_skew\_tab, curr) := block (
+\emph{generic\_skew\_tableau} (rev\_big\_shape,
+                      rev\_small\_shape,
+                      gen\_skew\_tab, curr) := block (
   [],
   if curr <= length (rev\_small\_shape) then block (
     [empty\_box,zeros,infs,current\_line],
@@ -10,82 +9,75 @@
     zeros : makelist (0, empty\_box),
     infs : makelist (inf, rev\_big\_shape[curr] - empty\_box),
     current\_line : [append (zeros, infs)],
-    return (\emph{generic\_skew\_tableau} (rev\_big\_shape, rev\_small\_shape, append (current\_line, gen\_skew\_tab), curr + 1)))
+    return (\emph{generic\_skew\_tableau} (rev\_big\_shape,
+                                  rev\_small\_shape,
+                                  append (current\_line, gen\_skew\_tab),
+                                  curr + 1)))
   else if curr <= length (rev\_big\_shape) then block (
     [current\_line],
     current\_line : [makelist (inf, rev\_big\_shape[curr])],
-    return (\emph{generic\_skew\_tableau} (rev\_big\_shape, rev\_small\_shape, append (current\_line, gen\_skew\_tab), curr + 1)))
+    return (\emph{generic\_skew\_tableau} (rev\_big\_shape,
+                                  rev\_small\_shape,
+                                  append (current\_line, gen\_skew\_tab),
+                                  curr + 1)))
   else return (gen\_skew\_tab));
 
-/* Remark: in filling a transposed Littlewood-Richardson skew tableau, beginning from bottom left */
-/* we must start with 1 (otherwise the corresponding word is not a lattice word, and hence the corresponding */
-/* word of the skew tableau is not a reverse lattice word). For preserving the structure of the tableau */
-/* the first column should be filled with ones. */
-/* A proof of this remark is in my thesis (http://linkgoeshere). */
-/* st should be a transposed generic skew tableau, fst should be [] and level should be 1. */
 \emph{fill\_first\_line} (st, u) := block (
   [filled\_skew\_tableau, ones],
   filled\_skew\_tableau : copylist (st),
-  ones : lsum (i, i, map (lambda ([x], x[1] : x[1]/inf), filled\_skew\_tableau)),
-  /* we should check if there are enough ones in the content u to fill the first column! */
+  ones : lsum (i, i, map (lambda ([x], x[1] : x[1]/inf),
+               filled\_skew\_tableau)),
   if ones <= u[1] then return ([filled\_skew\_tableau, ones]) else return ([]));
 
 \emph{reverse\_lattice\_word\_condition} (u, u\_ins, try) :=
-if (try > 1) and (u[try] > u\_ins[try]) and (u\_ins[try] + 1 <= u\_ins [try-1]) then true
+if (try > 1) and
+   (u[try] > u\_ins[try]) and
+   (u\_ins[try] + 1 <= u\_ins [try-1]) then true
 else if (try = 1) and (u[1] > u\_ins[1]) then true
 else false;
 
-/* u\_len should be length (u) */
 \emph{young\_tableau\_condition} (curr, u\_len, i, j, try) :=
-if ((i>1) and (length(curr[i-1])>=j) and (try<=curr[i-1][j])) or ((i>1) and (length(curr[i-1])<j)) or (i=1) then block (
-  if (j>1) and (i<length(curr)) and (curr[i][j-1]<try) and (try<=u\_len-length(curr[i])+j) then true
-  else if (j=1) and (i<length(curr)) and (try<u\_len-length(curr[i])+j) then true
-  else if (j>1) and (i=length(curr)) and (curr[i][j-1]<try) and (try<=u\_len-length(curr[i])+j) then true
+if ((i>1) and (length(curr[i-1])>=j) and (try<=curr[i-1][j])) or
+   ((i>1) and (length(curr[i-1])<j)) or (i=1) then block (
+  if (j>1) and (i<length(curr)) and (curr[i][j-1]<try) and
+     (try<=u\_len-length(curr[i])+j) then true
+  else if (j=1) and (i<length(curr)) and
+          (try<u\_len-length(curr[i])+j) then true
+  else if (j>1) and (i=length(curr)) and (curr[i][j-1]<try) and
+          (try<=u\_len-length(curr[i])+j) then true
   else false)
 else false;
 
-/* try should be 1 */
-/* nextl should be [] */
-/* curr[i][j] is empty, we should check this before calling \emph{next\_element} */
 \emph{next\_element} (curr, u, u\_ins, i, j, try, nextl) :=
 if (try <= length (u)) then block (
   [],
-  if \emph{reverse\_lattice\_word\_condition} (u, u\_ins, try) and \emph{young\_tableau\_condition} (curr, length (u), i, j, try) then block (
+  if \emph{reverse\_lattice\_word\_condition} (u, u\_ins, try) and
+     \emph{young\_tableau\_condition} (curr, length (u), i, j, try) then block (
     [nexte, next\_u\_ins],
     nexte : copylist (curr),
     next\_u\_ins : copylist (u\_ins),
     nexte[i][j] : try,
     next\_u\_ins[try] : next\_u\_ins[try] + 1,
-    return (\emph{next\_element} (curr, u, u\_ins, i, j, try + 1, append (nextl, [[nexte, next\_u\_ins]]))))
+    return (\emph{next\_element} (curr, u, u\_ins, i, j, try + 1,
+                          append (nextl, [[nexte, next\_u\_ins]]))))
   else return (\emph{next\_element} (curr, u, u\_ins, i, j, try + 1, nextl)))
 else return (nextl); 
 
-/* Returns a list containing the list of Littlewood-Richardson skew tableaux */
-/* with a given shape d/e and a given content u (i.e. Littlewood-Richardson number) */
-/* Actually d,e,u will be reversed words of transposed tableaux */
-/* d,e are reversed words of diagram, */
-/* u is a reversed words of a diagram with u[1]-(second (\emph{generic\_skew\_tableau} (d, e, [], 1), [])) */
-/* u\_ins keeps track of which and how many letters have been used, should be makelist (0, length (u)) */
-/* st should be the transposed generic skew tableau with first line filled with ones */
-/* i.e. \emph{fill\_first\_line} (remove\_tableau\_column (first (\emph{generic\_skew\_tableau} (d, e, [], 1), []))) */
-/* tl is the tableaux list, should be [[st, u\_ins]] */
-/* i,j are index to move around the skew tableau like in a matrix, i sould be 1 and j 2 */
-/* This function should be called only if \emph{fill\_first\_line} returns non empty list. */
 \emph{littlewood\_richardson\_num} (d, e, u, tl, i, j) := block (
   [],
-  /* WARNING! do not change the order in the if condition! */
   if (not emptyp (tl)) and (i <= length (tl[1][1]))then block (
     [curr],
-    curr : first (tl), /* curr[1] is a skew tableau, curr[2] is the crresponding u\_ins */
+    curr : first (tl),
     if (j <= length (curr[1][i])) then block (
       [],
-      if (curr[1][i][j] # inf) then return (\emph{littlewood\_richardson\_num} (d, e, u, tl, i, j+1))
+      if (curr[1][i][j] # inf) then
+         return (\emph{littlewood\_richardson\_num} (d, e, u, tl, i, j+1))
       else block (
         [next\_l],
         tl : delete (curr, tl),
         next\_l : \emph{next\_element} (curr[1], u, curr[2], i, j, 1, []),
         tl : append (tl, next\_l),
         return (\emph{littlewood\_richardson\_num} (d, e, u, tl, i, j))))
-    else return (\emph{littlewood\_richardson\_num} (d, e, u, tl, i+1, 1))) /* end of line, go to next */
+    else return (\emph{littlewood\_richardson\_num} (d, e, u, tl, i+1, 1)))
   else return (tl));
 \end{alltt}
