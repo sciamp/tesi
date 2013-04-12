@@ -29,9 +29,10 @@ lunghezza $n_k,\ldots,n_2,n_1$ da sinistra verso destra in quest'ordine.
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
 \raisebox{0.2\height}{\includegraphics[height=0.35\textwidth,angle=90]{YoungDiagramFlip}}
-\caption{$\tilde{\lambda}=(1,2,3,4)$}
+\caption{$\tilde{\lambda}=(1,2,3,5)$}
 \end{subfigure}
 \caption{Un diagramma di Young ed il suo coniugato.}
+\label{fig:transpose_diagram}
 \end{figure}
 
 L'implementazione realizzata in Maxima di un diagramma di Young \`e
@@ -52,7 +53,7 @@ else block (
 
 La funzione \emph{remove\_diagram\_column} toglie la colonna pi\`u a
 sinistra del diagramma e la inserisce come ultima riga del diagramma
-coniugato (Figura \ref{fig:transpose_diagram}). 
+coniugato (figura \ref{fig:transpose_diagram}). 
 Dal momento che l'intero in posizione $i$-esima rappresenta
 la lunghezza della riga $i$-esima del diagramma, togliere una colonna
 equivale a diminuire di uno ogni elemento della lista, e
@@ -60,12 +61,19 @@ nell'eventualit\`a che si ottenga uno zero in prima posizione,
 significa che abbiamo tolto abbastanza colonne da aver eliminato la
 prima riga del diagramma.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=1\textwidth]{transpose_diagram}
-\caption{Trasposizione di un diagramma di Young}
-\label{fig:transpose_diagram}
-\end{figure}
+Ad esempio, in Maxima possiamo ottenere il diagramma coniugato di
+$\lambda=(1,1,2,3,4)$
+\begin{alltt}
+\emph{ydiagram\_transpose\_rows} ([1,1,2,3,4]);
+\(\rightarrow\) [1,2,3,5]
+\end{alltt}
+
+%% \begin{figure}[h]
+%% \centering
+%% \includegraphics[width=1\textwidth]{transpose_diagram}
+%% \caption{Trasposizione di un diagramma di Young}
+%% \label{fig:transpose_diagram}
+%% \end{figure}
 
 \begin{notaz}
 Scriveremo $\lambda \vdash n$ intendendo che $\lambda$ \`e una
