@@ -6,7 +6,7 @@
 Un diagramma di Young $\lambda=(n_1,n_2,\dots,n_k)$ \`e una
 rappresentazione di una partizione di un intero positivo $n =
 \sum_{i=0}^{k}{n_i}$ come somma di interi positivi $n_k \geq \ldots \geq
-n_2 \geq n_1 \geq 0$. Graficamente possiamo immaginare un diagramma di
+n_2 \geq n_1 \geq 0$. Graficamente possiamo rappresentare un diagramma di
 Young come $k$ righe di celle quadrate, allineate a sinistra, di
 lunghezza $n_k,\ldots,n_2,n_1$ dall'alto verso il basso in quest'ordine.
 \end{defn}
@@ -34,8 +34,9 @@ lunghezza $n_k,\ldots,n_2,n_1$ da sinistra verso destra in quest'ordine.
 \caption{Un diagramma di Young ed il suo coniugato.}
 \end{figure}
 
-Possiamo calcolare il diagramma coniugato con la funzione
-\emph{ydiagram\_transpose\_rows}:
+L'implementazione realizzata in Maxima di un diagramma di Young \`e
+semplicemente una lista di interi positivi in ordine crescente,
+possiamo quindi calcolare il diagramma coniugato nel seguente modo:
 
 \begin{alltt}
 \emph{remove\_diagram\_column} (r, l) := 
@@ -50,7 +51,21 @@ else block (
 \end{alltt}
 
 La funzione \emph{remove\_diagram\_column} toglie la colonna pi\`u a
-sinistra del diagramma e la inserisce come ultima riga del diagramma coniugato.
+sinistra del diagramma e la inserisce come ultima riga del diagramma
+coniugato (Figura \ref{fig:transpose_diagram}). 
+Dal momento che l'intero in posizione $i$-esima rappresenta
+la lunghezza della riga $i$-esima del diagramma, togliere una colonna
+equivale a diminuire di uno ogni elemento della lista, e
+nell'eventualit\`a che si ottenga uno zero in prima posizione,
+significa che abbiamo tolto abbastanza colonne da aver eliminato la
+prima riga del diagramma.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{transpose_diagram}
+\caption{Trasposizione di un diagramma di Young}
+\label{fig:transpose_diagram}
+\end{figure}
 
 \begin{notaz}
 Scriveremo $\lambda \vdash n$ intendendo che $\lambda$ \`e una
@@ -65,12 +80,6 @@ $\mu \subset \lambda$, se
 \item $k \leq h$;
 \item $n_i \leq m_i$ per ogni $1 \leq i \leq k$.
 \end{enumerate}
-\end{defn}
-
-\begin{defn}[Skew diagram]
-Uno skew diagram \`e il diagramma che si ottiene togliendo a
-diagramma di Young $\lambda$ un diagramma pi\`u piccolo $\mu \subset
-\lambda$. Indicheremo lo skew diagram cos\`i ottenuto con $\lambda / \mu$.
 \end{defn}
 
 \begin{defn}[Tabella di Young]\label{ytab}
@@ -92,20 +101,72 @@ lungo le righe.
 
 \begin{oss}
 Ogni tabella $T$ \`e riempimento di un unico diagramma $\lambda$. Il
-diagramma di cui $T$ \`e riempimento \`e detto \emph{forma di $T$}
+diagramma di cui $T$ \`e riempimento \`e detto \emph{forma di $T$}.
 \end{oss}
+
+\begin{defn}[Skew diagram]
+Uno skew diagram \`e il diagramma che si ottiene togliendo a
+diagramma di Young $\lambda$ un diagramma pi\`u piccolo $\mu \subset
+\lambda$. Indicheremo lo skew diagram cos\`i ottenuto con $\lambda / \mu$.
+\end{defn} 
 
 \begin{defn}[Skew tableau]
 Diremo skew tableau un riempimento di uno skew diagram che rispetti i
 requisiti della definizione \ref{ytab}. 
 \end{defn}
 
+Rappresentiamo in Maxima i tableaux come liste di liste di lunghezza
+non decrescente, ognuna delle quali rappresenta una riga del tableau.
+La struttura \`e riempita rispettando le condizioni della definizione.
+Sfruttando la struttura che implementare i tableaux, realizziamo gli
+skew diagram $\lambda/\mu$ come dei tableaux contenenti i simboli $0$ e $\infty$.
+Usiamo $0$ per rappresentare una posizione ``proibita'', ovvero una
+posizione contenuta sia nel diagramma $\lambda$ che nel diagramma
+$\mu$, mentre usiamo $\infty$ per una posizione contenuta nel
+diagramma $\lambda$ ma non in $\mu$ che quindi fa effettivamente parte
+dello skew diagram. Dati due diagrammi possiamo calcolare lo skew
+diagram attraverso la funzione
+
+\begin{alltt}
+\emph{generic\_skew\_tableau} (rev\_big\_shape,
+                      rev\_small\_shape,
+                      gen\_skew\_tab, curr) := block (
+  [],
+  if curr <= length (rev\_small\_shape) then block (
+    [empty\_box,zeros,infs,current\_line],
+    empty\_box : rev\_small\_shape[curr],
+    zeros : makelist (0, empty\_box),
+    infs : makelist (inf, rev\_big\_shape[curr] - empty\_box),
+    current\_line : [append (zeros, infs)],
+    return (\emph{generic\_skew\_tableau} (rev\_big\_shape,
+                                  rev\_small\_shape,
+                                  append (current\_line, gen\_skew\_tab),
+                                  curr + 1)))
+  else if curr <= length (rev\_big\_shape) then block (
+    [current\_line],
+    current\_line : [makelist (inf, rev\_big\_shape[curr])],
+    return (\emph{generic\_skew\_tableau} (rev\_big\_shape,
+                                  rev\_small\_shape,
+                                  append (current\_line, gen\_skew\_tab),
+                                  curr + 1)))
+  else return (gen\_skew\_tab));
+\end{alltt}
+
 \section{Row bumping}
 Il row bumping \`e la procedura con la quale dati un tableau $T$ e un
 intero positivo $x$ si costruisce un tableau, che indicheremo con $T
 \gets x$, la cui forma ha un box in pi\`u della forma di $T$ con
-entrata $x$.\\
-Se $x_1 = x$ \`e non minore di ciascun elemento della prima riga
+entrata $x$ (Figura \ref{fig:rowbump}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{row_bump}
+\caption{Row bumping}
+\label{fig:rowbump}
+\end{figure}
+
+Sia $x_1 = x$ l'elemento da inserire nel tableau $T$, se $x_1$ \`e non 
+minore di ciascun elemento della prima riga
 dall'alto di $T$, aggiungiamo alla fine di tale riga l'entrata x.
 Altrimenti se $x_2$ \`e il primo elemento da sinistra della prima riga
 di $T$ strettamente maggiore di $x_1$, inseriamo $x_1$ al posto di
@@ -115,7 +176,6 @@ grado di effettuare un inserimento al termine di una riga oppure fino
 a quando aggiungeremo una riga in basso contenente l'elemento $x_h$
 sostituito nell'ultima riga al passo precedente con l'elemento
 $x_{h-1}$.
-
 La funzione \emph{rec\_bump\_row} effettua il row bumping di un dato
 elemento $x$ in una riga $r$ scorrendola dal fondo (chiameremo infatti
 la funzione con $i$ pari alla lunghezza della riga) fino a trovare
@@ -149,12 +209,6 @@ if (x > 0) then block (
 else t;
 \end{alltt}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{row_bump}
-\caption{Row bumping}
-\end{figure}
-
 \begin{oss}
 Al termine di ogni iterazione della funzione
 \emph{rec\_ytableau\_word\_bump} la variabile $t$ \`e la parola di un
@@ -178,7 +232,7 @@ restituisce uno Young tableau.
 %% \end{proof}
 \end{oss}
 
-Iterando l'operazione di row bumping si ha la seguente
+Iterando l'operazione di row bumping (figura \ref{fig:tab_prod}) si ha la seguente
 
 \begin{defn}
 Dati due tableaux $T$ e $U$, dette $x_1,\ldots , x_s$ le entrate di
@@ -187,6 +241,13 @@ $T \cdot U = (( \ldots ((T \gets x_1) \gets x_2 ) \gets \ldots ) \gets x_{s-1} )
 \gets x_s$.
 \end{defn} 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{tableaux_product}
+\caption{Prodotto di due tableaux}
+\label{fig:tab_prod}
+\end{figure}
+\newpage
 \begin{oss}
 Il prodotto di tableaux non \`e commutativo, infatti ad esempio
 \begin{center}
@@ -208,19 +269,16 @@ concetti.
 Dato un tableau o uno skew tableau $T$, diciamo row word, word o parola
 di $T$, che indicheremo con $w(T)$, la parola che si ottiene elencando
 da sinistra verso destra, dal basso verso l'alto le entrate di $T$.
+\end{defn}
 
-\begin{notaz}
-Se $u$ e $v$ sono due parole, scriviamo $u \leq v$ intendendo che
-\emph{ogni} lettera di $u$ \`e minore o uguale ad \emph{ogni} lettera
-di $v$.
-\end{notaz}
+Ad esempio la parola associata al tableau ottenuto nel prodotto di
+figura \ref{fig:tab_prod} \`e $87766447225511123$.
 
 \begin{alltt}
 \emph{word\_from\_ytableau} (l, t) :=
 if (not emptyp (t)) then \emph{word\_from\_ytableau} (append (l, t[1]), rest (t, 1))
 else l;
 \end{alltt}
-\end{defn}
 
 \begin{oss}
 Dalla parola $w(T)$ di un tableau \`e possibile risalire al tableau
@@ -243,6 +301,15 @@ else if (not emptyp (l)) then block (
 else reverse (t);
 \end{alltt}
 \end{oss}
+
+\begin{notaz}
+Se $u$ e $v$ sono due parole, scriviamo $u \leq v$ se ogni
+\emph{ogni} lettera che occorre in $u$ \`e minore o uguale di \emph{ogni} lettera
+che occorre in $v$. Se invece $u$ \`e una parola e $x$ un intero
+positivo scriviamo $u \leq x$ se ogni lettera che occorre in $u$ \`e
+minore o uguale di $x$.\\
+Analogamente per le disuguaglianze inverse e quelle in senso stretto. 
+\end{notaz}
 
 La cosa interessante \`e l'effetto del row bumping sulla
 parola di un tableau. 
