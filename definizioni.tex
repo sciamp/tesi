@@ -216,7 +216,6 @@ di $v$.
 \end{notaz}
 
 \begin{alltt}
-/* l should be [], t is a tableau word */
 \emph{word\_from\_ytableau} (l, t) :=
 if (not emptyp (t)) then \emph{word\_from\_ytableau} (append (l, t[1]), rest (t, 1))
 else l;
@@ -230,9 +229,6 @@ ottengono leggendo la parola da sinistra verso destra e interrompendo
 ogni volta in cui una lettera \`e strettamente minore della
 precedente.
 \begin{alltt}
-/* l should be a tableau word, if given as a string */
-/* as i'm not always in the mood of entering a list of integers! */
-/* should be map ('parse_string, charlist ("5644623551223")) */
 \emph{ytableau\_from\_word} (l,t) :=
 if ((not emptyp (l)) and (not emptyp (t))) then block (
   if (last (t[1])) <= l[1] then block (
