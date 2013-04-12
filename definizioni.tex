@@ -315,29 +315,29 @@ La cosa interessante \`e l'effetto del row bumping sulla
 parola di un tableau. 
 Possiamo interpretare l'algoritmo che descrive
 il row bumping in termini di parole: sia $w = w(T)$ la parola in questione e
-$x$ l'elemento da inserire. Possiamo fattorizzare $w=\bar w \cdot u \cdot \bar x \cdot
-v$ dove $\bar w$ \`e la parola del tableau ottenuto da $T$ rimuovendo
-la prima riga e $u \cdot \bar x \cdot v$ \`e la parola corrispondente
+$x$ l'elemento da inserire. Possiamo fattorizzare $w=\bar w (u \bar x
+v)$ dove $\bar w$ \`e la parola del tableau ottenuto da $T$ rimuovendo
+la prima riga e $u \bar x v$ \`e la parola corrispondente
 alla prima riga di $T$, dove $u$ \`e composta da lettere non maggiori
-di $x$ e $\bar x > x$. Si ha $w \cdot x = \bar w \cdot \bar x \cdot u \cdot x
-\cdot v$. Cio\`e:
+di $x$ e $\bar x > x$. Si ha $w \cdot x = \bar w \bar x u x
+v$. Cio\`e:
 
 \begin{equation}\label{row_bump_word}
-(u \cdot \bar x \cdot v) \cdot x \rightsquigarrow \bar x \cdot u \cdot
-  x \cdot v \mbox{ se } u \leq x < \bar x \leq v
+u \bar x v \cdot x = \bar x u
+  x v \mbox{ se } u \leq x < \bar x \leq v
 \end{equation}
 
-Ora se $v=v_1 \ldots v_k$ la \eqref{row_bump_word}, tenuto conto che
+Infatti se $v=v_1 \ldots v_k$ la \eqref{row_bump_word}, tenuto conto che
 $x < \bar x \leq v_i$ per ogni $1 \leq i \leq k$, diventa
 
 \begin{equation}\label{pre_bump}
 \begin{split}
-u \cdot \bar x \cdot v_1 \cdot \ldots \cdot v_k \cdot x
-\rightsquigarrow u \cdot \bar x \cdot v_1 \cdot \ldots \cdot v_{k-1}
-\cdot x \cdot v_k \rightsquigarrow \ldots\\
-\ldots \rightsquigarrow u \cdot \bar x \cdot v_1 \cdot \ldots \cdot
-v_i \cdot x \cdot v_{i+1} \cdot \ldots \cdot v_k \rightsquigarrow \ldots
-\rightsquigarrow u \cdot \bar x \cdot x \cdot v_1 \cdot \ldots \cdot v_k
+u \bar x (v_1 \ldots v_k \cdot x)
+= u \bar x (v_1 \ldots v_{k-1}
+\cdot x )v_k = \ldots\\
+\ldots = u \bar x (v_1 \ldots
+v_i \cdot x )v_{i+1} \ldots v_k = \ldots
+= u \bar x x v_1 \ldots v_k
 \end{split}
 \end{equation}
 
@@ -346,38 +346,37 @@ descrivere il bumping di $\bar x$ come
 
 \begin{equation}\label{bump}
 \begin{split}
-u_1 \cdot \ldots \cdot u_k \cdot \bar x \cdot x \cdot v
-\rightsquigarrow u_1 \cdot \ldots \cdot u_{h-1} \cdot \bar x \cdot u_k
-\cdot x \cdot v \rightsquigarrow \ldots\\
-\ldots \rightsquigarrow u_1 \cdot \ldots \cdot u_i \cdot \bar x \cdot
-u_{i+1} \cdot \ldots u_h \cdot x \cdot v \rightsquigarrow \ldots
-\rightsquigarrow \bar x \cdot u_1 \cdot \ldots \cdot u_h \cdot x \cdot v.
+(u_1 \ldots u_k \cdot \bar x) x v
+= (u_1 \ldots u_{h-1} \cdot \bar x) u_k x v = \ldots\\
+\ldots =  (u_1 \ldots u_i \cdot \bar x
+)u_{i+1} \ldots u_h x v = \ldots
+= \bar x u_1 \ldots u_h x v.
 \end{split}
 \end{equation}
 
 Possiamo quindi identificare due trasformazioni fondamentali: la prima
-viene applicata ad ogni passaggio in \eqref{pre_bump}, la seconda
-viene applicata in \eqref{bump}:
+viene applicata a tre lettere consecutive ad ogni passaggio in \eqref{pre_bump}, la seconda
+in \eqref{bump}:
 
 \begin{equation}\label{k1}\tag{$K_1$}
-y \cdot z \cdot x \rightsquigarrow y \cdot x \cdot z \mbox{ se } x < y
+y z x = y x z \mbox{ se } x < y
 \leq z
 \end{equation}
 \begin{equation}\label{k2}\tag{$K_2$}
-y \cdot z \cdot x \rightsquigarrow z \cdot y \cdot x \mbox{ se } y
+y z x = z y x \mbox{ se } y
 \leq x < z
 \end{equation}
 
 \begin{defn}[Trasformazione elementare di Knuth]
 Una trasformazione di una parola si dice elementare di Knuth se
-applica a tre lettere consecutive la trasformazione \eqref{k1},
-\eqref{k2} o una delle loro inverse.
+applica a tre lettere consecutive la trasformazione \eqref{k1} o la
+\eqref{k2}.
 \end{defn}
 
 \begin{defn}[Knuth-equivalenti]
 Due parole $w$ e $w'$ si dicono Knuth-equivalenti, e si scrive $w
-\equiv w'$ se \`e possibile ottenere una dall'altra, e viceversa, per
-mezzo di sole trasformazioni elementari di Knuth.
+\equiv w'$ se \`e possibile ottenere una dall'altra per mezzo di una catena di
+sole trasformazioni elementari di Knuth.
 \end{defn}
 %% \newpage % tornava brutto con l'immagine alla pagina dopo
 \begin{oss}
