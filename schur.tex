@@ -53,6 +53,7 @@ Schur corrispondente alla partizione $\lambda$ con $m$ variabili.
 
 \emph{last\_or\_zero} (l) := if emptyp (l) then 0 else last(l);
 
+
 \emph{fill\_next\_line} (len, m, prev, ls) := block (
   [],
   if (len = 0) then return (ls)
@@ -136,42 +137,47 @@ corrispondente monomio, la somma di questi monomi \`e il polinomio di
 Schur cercato $s_\lambda(x_1,\ldots,x_m)$.
 
 % Non sono sicuro di doverne parlare. Per ora lascio in sospeso.
-%% \section{Corrispondenza di Robinson-Schensted-Knuth}
-%% Data una parola $w=x_1\ldots x_r$ indichiamo con $P(w)$ l'\emph{unico} tableau con
-%% parola Knuth-equivalente a $w$ (teorema \eqref{knuth_equiv_word}). Un
-%% modo per ottenede $P(w)$ data $w$ \`e la \emph{procedura canonica}
-%% vista nel capitolo precedente. Mentre costruiamo il tableau $P(w)$
-%% teniamo traccia delle posizioni in cui stiamo inserendo le lettere di
-%% $w$ costruendo un'altra tabella $Q(w)$ della stessa forma di $P(w)$
-%% inserendo $k$ in posizione $Q(w)^i_j$ ogniqualvolta inseriamo $x_k$
-%% nella riga $i$-esima alla colonna $j$-esima del tableau $P(w)$. Dunque
-%% se stiamo costruendo $P_k=P(x_1\ldots x_k)=P_{k-1} \gets x_k =
-%% ((\ldots (\varnothing \gets x_1) \gets \ldots ) \gets x_{k-1} ) \gets
-%% x_k$ inseriremo $k$ in $Q_k=Q(x_1 \ldots x_k)$ in corrispondenza della posizione
-%% presente in $P_k$ ma non in $P_{k-1}$.
+\section{Corrispondenza di Robinson-Schensted-Knuth}
+Data una parola $w=x_1\ldots x_r$ indichiamo con $P(w)$ l'\emph{unico} tableau con
+parola Knuth-equivalente a $w$ (teorema \ref{knuth_equiv_word}). Un
+modo per ottenede $P(w)$ data $w$ \`e la \emph{procedura canonica}
+vista nel capitolo precedente. Mentre costruiamo il tableau $P(w)$
+teniamo traccia delle posizioni in cui stiamo inserendo le lettere di
+$w$ costruendo un'altra tabella $Q(w)$ della stessa forma di $P(w)$
+inserendo $k$ in posizione $Q(w)^i_j$ ogniqualvolta inseriamo $x_k$
+nella riga $i$-esima alla colonna $j$-esima del tableau $P(w)$. Dunque
+se stiamo costruendo $P_k=P(x_1\ldots x_k)=P_{k-1} \gets x_k =
+((\ldots (\varnothing \gets x_1) \gets \ldots ) \gets x_{k-1} ) \gets
+x_k$ inseriremo $k$ in $Q_k=Q(x_1 \ldots x_k)$ in corrispondenza della posizione
+presente in $P_k$ ma non in $P_{k-1}$.
 
-%% \begin{oss}
-%% Ad ogni passo $1 \leq k \leq r$ della procedura canonica, $Q_k$ \`e un
-%% tableau standard.
-%% %% \begin{proof}
-%% %% Chiaramente le entrate di $Q(w)$ sono tutte distinte fra loro essendo
-%% %% indici delle lettere della parola $w$. Supponiamo che $Q_k$ sia un
-%% %% tableau standard, si hanno tre casi:\\
-%% %% $x_k < x_{k+1}$: \\
-%% %% $x_k = x_{k+1}$:\\
-%% %% $x_k > x_{k+1}$:\\
-%% %% \end{proof}
-%% \end{oss}
+\begin{oss}
+Ad ogni passo $1 \leq k \leq r$ della procedura canonica, $Q_k$ \`e un
+tableau standard.
+%% \begin{proof}
+%% Chiaramente le entrate di $Q(w)$ sono tutte distinte fra loro essendo
+%% indici delle lettere della parola $w$. Supponiamo che $Q_k$ sia un
+%% tableau standard, si hanno tre casi:\\
+%% $x_k < x_{k+1}$: \\
+%% $x_k = x_{k+1}$:\\
+%% $x_k > x_{k+1}$:\\
+%% \end{proof}
+\end{oss}
 
-%% Essendo note le posizioni in cui sono state inserite le varie lettere,
-%% da $(P(w),Q(w))$ possiamo ricostruire $w$, questo significa che data
-%% una qualunque coppia di tableaux $(P,Q)$ che riempiono lo stesso
-%% diagramma con $Q$ standard esiste una parola $\bar w$ tale che
-%% $(P,Q)=(P(\bar w),Q(\bar w))$.\\
-%% Abbiamo cos\`i una corrispondenza
-%% biunivoca fra le lettere $w$ di lunghezza $r$ con lettere
-%% nell'alfabeto $[n]$ e le coppie $(P,Q)$ di tableaux riempimenti dello
-%% stesso diagramma $\lambda \vdash r$ con $P$ ad entrate in $[n]$ e $Q$
-%% standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
-%% tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
-%% \`e uno standard tableau e viceversa.
+Essendo note le posizioni in cui sono state inserite le varie lettere,
+da $(P(w),Q(w))$ possiamo ricostruire $w$, questo significa che data
+una qualunque coppia di tableaux $(P,Q)$ che riempiono lo stesso
+diagramma con $Q$ standard esiste una parola $\bar w$ tale che
+$(P,Q)=(P(\bar w),Q(\bar w))$.
+
+Abbiamo cos\`i una corrispondenza
+biunivoca fra le lettere $w$ di lunghezza $r$ con lettere
+nell'alfabeto $[n]$ e le coppie $(P,Q)$ di tableaux riempimenti dello
+stesso diagramma $\lambda \vdash r$ con $P$ ad entrate in $[n]$ e $Q$
+standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
+tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
+\`e uno standard tableau e viceversa.
+
+Knuth generalizz\`o questa corrispondenza ad una qualunque coppia di
+tableau $(P,Q)$, che riempiono lo stesso diagramma, con $P$ ad entrate
+in $[n]$ e $Q$ in $[m]$.
