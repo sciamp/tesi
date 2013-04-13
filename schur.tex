@@ -178,6 +178,32 @@ standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
 tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
 \`e uno standard tableau e viceversa.
 
+\begin{notaz}[Vettore doppio]
+Chiamiamo vettore doppio una matrice $2 \times n$. 
+\end{notaz}
+
 Knuth generalizz\`o questa corrispondenza ad una qualunque coppia di
 tableau $(P,Q)$, che riempiono lo stesso diagramma, con $P$ ad entrate
-in $[n]$ e $Q$ in $[m]$.
+in $[n]$ e $Q$ in $[m]$. In questo caso si ha la corrispondenza fra le
+coppie $(P,Q)$ e i \emph{vettori doppi}
+\begin{math}
+\begin{bmatrix}
+u_1 & \ldots & u_m\\
+v_1 & \ldots & v_m
+\end{bmatrix}
+\end{math}.
+
+\begin{defn}
+Un vettore doppio
+\begin{math}
+\begin{bmatrix}
+u_1 & \ldots & u_m\\
+v_1 & \ldots & v_m
+\end{bmatrix}
+\end{math}
+si dice in ordine lessicografico se valgono:
+\begin{enumerate}[(i)]
+\item $u_1 \leq \ldots \leq u_n$;
+\item $v_i \leq v_{i+1}$ se $u_1 = u_{i+1}$.
+\end{enumerate}
+\end{defn}
