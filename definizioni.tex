@@ -32,7 +32,6 @@ lunghezza $n_k,\ldots,n_2,n_1$ da sinistra verso destra in quest'ordine.
 \caption{$\tilde{\lambda}=(1,2,3,5)$}
 \end{subfigure}
 \caption{Un diagramma di Young ed il suo coniugato.}
-\label{fig:transpose_diagram}
 \end{figure}
 
 L'implementazione realizzata in Maxima di un diagramma di Young \`e
@@ -53,7 +52,7 @@ else block (
 
 La funzione \emph{remove\_diagram\_column} toglie la colonna pi\`u a
 sinistra del diagramma e la inserisce come ultima riga del diagramma
-coniugato (figura \ref{fig:transpose_diagram}). 
+coniugato. 
 Dal momento che l'intero in posizione $i$-esima rappresenta
 la lunghezza della riga $i$-esima del diagramma, togliere una colonna
 equivale a diminuire di uno ogni elemento della lista, e
