@@ -1,4 +1,76 @@
 \chapter{Regola di Littlewood-Richardson}
+% Non sono sicuro di doverne parlare. Per ora lascio in sospeso.
+\section{Corrispondenza di Robinson-Schensted-Knuth}\label{RSKcorr}
+Data una parola $w=x_1\ldots x_r$ indichiamo con $P(w)$ l'\emph{unico} tableau con
+parola Knuth-equivalente a $w$ (teorema \ref{knuth_equiv_word}). Un
+modo per ottenede $P(w)$ data $w$ \`e la \emph{procedura canonica}
+vista nel capitolo precedente. Mentre costruiamo il tableau $P(w)$
+teniamo traccia delle posizioni in cui stiamo inserendo le lettere di
+$w$ costruendo un'altra tabella $Q(w)$ della stessa forma di $P(w)$
+inserendo $k$ in posizione $Q(w)^i_j$ ogniqualvolta inseriamo $x_k$
+nella riga $i$-esima alla colonna $j$-esima del tableau $P(w)$. Dunque
+se stiamo costruendo $P_k=P(x_1\ldots x_k)=P_{k-1} \gets x_k =
+((\ldots (\varnothing \gets x_1) \gets \ldots ) \gets x_{k-1} ) \gets
+x_k$ inseriremo $k$ in $Q_k=Q(x_1 \ldots x_k)$ in corrispondenza della posizione
+presente in $P_k$ ma non in $P_{k-1}$.
+
+\begin{oss}
+Ad ogni passo $1 \leq k \leq r$ della procedura canonica, $Q_k$ \`e un
+tableau standard.
+%% \begin{proof}
+%% Chiaramente le entrate di $Q(w)$ sono tutte distinte fra loro essendo
+%% indici delle lettere della parola $w$. Supponiamo che $Q_k$ sia un
+%% tableau standard, si hanno tre casi:\\
+%% $x_k < x_{k+1}$: \\
+%% $x_k = x_{k+1}$:\\
+%% $x_k > x_{k+1}$:\\
+%% \end{proof}
+\end{oss}
+
+Essendo note le posizioni in cui sono state inserite le varie lettere,
+da $(P(w),Q(w))$ possiamo ricostruire $w$, questo significa che data
+una qualunque coppia di tableaux $(P,Q)$ che riempiono lo stesso
+diagramma con $Q$ standard esiste una parola $\bar w$ tale che
+$(P,Q)=(P(\bar w),Q(\bar w))$.
+
+Abbiamo cos\`i una corrispondenza
+biunivoca fra le parole $w$ di lunghezza $r$ con lettere
+nell'alfabeto $[n]$ e le coppie $(P,Q)$ di tableaux riempimenti dello
+stesso diagramma $\lambda \vdash r$ con $P$ ad entrate in $[n]$ e $Q$
+standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
+tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
+\`e uno standard tableau e viceversa.
+
+\begin{notaz}[Vettore doppio]
+Chiamiamo vettore doppio una matrice $2 \times n$. 
+\end{notaz}
+
+\begin{defn}
+Un vettore doppio
+\begin{math}
+\begin{bmatrix}
+u_1 & \ldots & u_m\\
+v_1 & \ldots & v_m
+\end{bmatrix}
+\end{math}
+si dice in ordine lessicografico se valgono:
+\begin{enumerate}[(i)]
+\item $u_1 \leq \ldots \leq u_n$;
+\item $v_i \leq v_{i+1}$ se $u_1 = u_{i+1}$.
+\end{enumerate}
+\end{defn}
+
+Knuth generalizz\`o (per i dettagli si veda ~\cite{fulton1997young})
+la corrispondenza precedente ad una qualunque coppia di
+tableau $(P,Q)$, che riempiono lo stesso diagramma, con $P$ ad entrate
+in $[n]$ e $Q$ in $[m]$. In questo caso si ha la corrispondenza fra le
+coppie $(P,Q)$ e i \emph{vettori doppi} in ordine lessicografico
+\begin{math}
+\begin{bmatrix}
+u_1 & \ldots & u_m\\
+v_1 & \ldots & v_m
+\end{bmatrix}
+\end{math}.
 
 \begin{prop}
 Sia
@@ -17,6 +89,8 @@ vuoto nelle posizioni occupate dai corrispettivi $v_i$ in $T'$,
 otteniamo quindi uno skew tableu $S$.\\
 Lo skew tableau $S$ si rettifica a $Rect(S)=Q$.
 \end{prop}
+
+\section{I numeri di Littlewood-Richardson}
 
 Dati tre diagrammi di Young $\lambda \vdash n$, $\mu \vdash m$ e $\nu
 \vdash r$ ci chiediamo in quanti modi un tableau $V$ che riempie
@@ -70,7 +144,7 @@ In $R_{[m]}$ vale $S_{\lambda}[m] \cdot S_{\mu}[m] =
 \sum\limits_{\nu} c_{\lambda \mu}^{\nu} S_{\nu}[m]$.
 \end{cor}
 
-\begin{oss}
+\begin{oss}\label{lr_formula_pol_schur}
 Applicando al corollario precedente l'omomorfismo \eqref{ring_tab}
 otteniamo
 \begin{center}\begin{math}
@@ -116,9 +190,6 @@ Il numero di skew tableaux di Littlewood-Richardson che riempiono lo
 skew diagram $\nu/\lambda$ con contenuto $\mu$ \`e $c_{\lambda \mu}^{\nu}$.
 \end{prop}
 
-Vediamo l'implementazione:
-\input{lrsourcecode}
-
 Dati tre diagrammi di Young $\nu$,$\lambda$ e $\mu$ la funzione
 \emph{littlewood\_richardson\_num} restituisce una lista contenente
 tutti i possibili skew tableau di Littlewood-Richardson che riempiono
@@ -156,3 +227,58 @@ necessariamente essere pari a 1.
 %% /* the first column should be filled with ones. */
 %% /* A proof of this remark is in my thesis (http://linkgoeshere). */
 %% /* st should be a transposed generic skew tableau, fst should be [] and level should be 1. */
+
+Vediamo un esempio di utilizzo della funzione che abbiamo realizzato.
+Dati due diagrammi \texttt{e:[2,3]} e \texttt{u:[1,2]} calcoliamo la
+lista dei possibili diagrammi che sono riempiti dai tableaux che si
+ottengono come prodotto di tutti i possibili tableaux su \texttt{e} e
+\texttt{u} attaccando al primo un numero di box pari alla dimensione
+di \texttt{u} in tutte le posizioni possibili:
+\texttt{ds:unique (\emph{yshape\_product} ([[e,3]]))}. Calcoliamo
+quindi tutti i possibili skew diagram che si ottengono da ogni
+diagramma della lista \texttt{ds} e dal diagramma \texttt{e},
+tasponiamoli, e riempiamone la prima colonna:
+\begin{alltt}
+skews:map (lambda ([x], \emph{fill\_first\_line} (
+  \emph{remove\_tableau\_column} (\emph{generic\_skew\_tableau} (x[1], e, [], 1),[]), u)), ds)
+\end{alltt}
+da cui otteniamo
+\begin{alltt}
+\([[[[0,\infty],[0,0],[0,0,\infty,\infty,\infty]],0],[[[0,\infty],[0,0,\infty],[0,0,\infty,\infty]],0],[[[0,\infty,\infty],[0,0,\infty],[0,0,\infty]],0],\)
+\([[[0,\infty],[0,0],[0,0,\infty,\infty]],0],[[[0,\infty],[0,0,\infty],[0,0,\infty]],0],[[[1],[0,\infty],[0,0],[0,0,\infty]],1],\)
+\([[[1,\infty],[0,\infty],[0,0],[0,0]],1],[[[1],[1],[0,\infty],[0,0],[0,0]],2]]\)
+\end{alltt}
+
+Calcoliamo infine i numeri di Littlewood-Richardson corrispondenti ai
+diagrammi \texttt{ds}:
+\begin{alltt}
+l1:map (
+    lambda ([x], if (not emptyp (skews[x])) then 
+      [ds[x][1],length(\emph{littlewood\_richardson\_num}(d,e,u,
+                      [[skews[x][1],append([skews[x][2]],makelist(0,length(u)-1))]],
+                      1,2))]),
+    makelist (i,i,1,length (skews)))
+l2 : delete (false, map (lambda ([x], if (listp (x)) and (x[2] > 0) then x ), l1));
+\end{alltt}
+da cui si ottiene
+\texttt{[[[3,3,1,1],1],[[3,3,2],1],[[4,3,1],2],[[4,4],1],[[5,3],1]]}.
+Gli elementi di questa lista sono i diagrammi che costituiscono la combinazione lineare a sinistra
+dell'uguale nell'osservazione \ref{lr_formula_pol_schur} accompagnati
+dai corrispondenti numeri di Littlewood-Richardson che compaiono nella
+stessa formula come coefficienti.\\
+Calcoliamo i corrispondenti polinomi di Schur (i.e. applichiamo
+l'omomorfismo \eqref{ring_tab}) e quindi la combinazione lineare:
+\begin{alltt}
+poly:map (lambda ([x], x[2]*\emph{fl\_better\_yschur\_polynomial\_rows} (x[1],5)), l2);
+prod\_lr:ratsimp (sum (poly[i],i,1,length(poly)))
+\end{alltt}
+che possiamo confrontare con il prodotto dei polinomi di Schur
+associati ai diagrammi \texttt{e} ed \texttt{u}:
+\begin{alltt}
+poly\_e:\emph{fl\_better\_yschur\_polynomial\_rows} (e,5)
+poly\_u:\emph{fl\_better\_yschur\_polynomial\_rows} (u,5)
+prod:ratsimp (poly\_e*poly\_u)
+is (expand (prod - prod\_lr = 0))
+\(\rightarrow\) true
+\end{alltt}
+che ci permette di confermare su questo esempio quanto visto nella teoria.

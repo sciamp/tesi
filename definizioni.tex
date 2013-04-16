@@ -34,22 +34,8 @@ lunghezza $n_k,\ldots,n_2,n_1$ da sinistra verso destra in quest'ordine.
 \caption{Un diagramma di Young ed il suo coniugato.}
 \end{figure}
 
-L'implementazione realizzata in Maxima di un diagramma di Young \`e
-semplicemente una lista di interi positivi in ordine crescente,
-possiamo quindi calcolare il diagramma coniugato nel seguente modo:
-
-\begin{alltt}
-\emph{remove\_diagram\_column} (r, l) := 
-if emptyp (r) then return (l)
-else block (
-  l : append ([length (r)], l),
-  r : r-1,
-  r : delete (0, r),
-  return (\emph{remove\_diagram\_column} (r, l)));
-
-\emph{ydiagram\_transpose\_rows} (d) := \emph{remove\_diagram\_column} (d, []);
-\end{alltt}
-
+L'implementazione che abbiamo realizzato in Maxima di un diagramma di Young \`e
+semplicemente una lista di interi positivi in ordine crescente.
 La funzione \emph{remove\_diagram\_column} toglie la colonna pi\`u a
 sinistra del diagramma e la inserisce come ultima riga del diagramma
 coniugato. 
@@ -61,7 +47,7 @@ significa che abbiamo tolto abbastanza colonne da aver eliminato la
 prima riga del diagramma.
 
 Ad esempio, in Maxima possiamo ottenere il diagramma coniugato di
-$\lambda=(1,1,2,3,4)$
+$\lambda=(1,1,2,3,4)$ con la nostra funzione
 \begin{alltt}
 \emph{ydiagram\_transpose\_rows} ([1,1,2,3,4]);
 \(\rightarrow\) [1,2,3,5]
@@ -132,34 +118,17 @@ posizione contenuta sia nel diagramma $\lambda$ che nel diagramma
 $\mu$, mentre usiamo $\infty$ per una posizione contenuta nel
 diagramma $\lambda$ ma non in $\mu$ che quindi fa effettivamente parte
 dello skew diagram. Dati due diagrammi possiamo calcolare lo skew
-diagram attraverso la funzione
+diagram attraverso la funzione\\
+\texttt{\emph{generic\_skew\_tableau} (rev\_big\_shape,rev\_small\_shape,gen\_skew\_tab,curr)}.
+Ad esempio per calcolare lo skew diagram $\lambda \ \mu$ originato da
+$\lambda=(2,3,4,5)$ e $\mu=(1,3,3)$
 
 \begin{alltt}
-\emph{generic\_skew\_tableau} (rev\_big\_shape,
-                      rev\_small\_shape,
-                      gen\_skew\_tab, curr) := block (
-  [],
-  if curr <= length (rev\_small\_shape) then block (
-    [empty\_box,zeros,infs,current\_line],
-    empty\_box : rev\_small\_shape[curr],
-    zeros : makelist (0, empty\_box),
-    infs : makelist (inf, rev\_big\_shape[curr] - empty\_box),
-    current\_line : [append (zeros, infs)],
-    return (\emph{generic\_skew\_tableau} (rev\_big\_shape,
-                                  rev\_small\_shape,
-                                  append (current\_line, gen\_skew\_tab),
-                                  curr + 1)))
-  else if curr <= length (rev\_big\_shape) then block (
-    [current\_line],
-    current\_line : [makelist (inf, rev\_big\_shape[curr])],
-    return (\emph{generic\_skew\_tableau} (rev\_big\_shape,
-                                  rev\_small\_shape,
-                                  append (current\_line, gen\_skew\_tab),
-                                  curr + 1)))
-  else return (gen\_skew\_tab));
+\emph{generic\_skew\_tableau} (reverse ([2,3,4,5]),reverse ([1,3,3]),[],1);
+\(\rightarrow [[\infty,\infty],[0,\infty,\infty],[0,0,0,\infty],[0,0,0,\infty,\infty]]\)
 \end{alltt}
 
-\section{Row bumping}
+\section{Row bumping}\label{rowbump_par}
 Il row bumping \`e la procedura con la quale dati un tableau $T$ e un
 intero positivo $x$ si costruisce un tableau, che indicheremo con $T
 \gets x$, la cui forma ha un box in pi\`u della forma di $T$ con
@@ -183,37 +152,23 @@ grado di effettuare un inserimento al termine di una riga oppure fino
 a quando aggiungeremo una riga in basso contenente l'elemento $x_h$
 sostituito nell'ultima riga al passo precedente con l'elemento
 $x_{h-1}$.
-La funzione \emph{rec\_bump\_row} effettua il row bumping di un dato
+Abbiamo implementato \texttt{\emph{rec\_bump\_row} (r,x,i)} che effettua il row bumping di un dato
 elemento $x$ in una riga $r$ scorrendola dal fondo (chiameremo infatti
 la funzione con $i$ pari alla lunghezza della riga) fino a trovare
 l'elemento da sostituire oppure aggiungendo una nuova entrata in coda.
 Restituisce la riga modificata con, eventualmente, l'elemento da
 inserire nella riga successiva.
 
-La funzione \emph{rec\_ytableau\_word\_bump} esegue il row bumping
+La funzione \texttt{\emph{rec\_ytableau\_word\_bump} (t,x,i)}, dove
+$t$ \`e un tableau, $x$ \`e l'elemento che stiamo inserendo e $i$ il
+numero di righe del tableau, esegue il row bumping
 fino a quando \`e possibile, e se necessario aggiunge una nuova riga
-al tableau.
+al tableau $t$. Ad esempio possiamo ottenere il risultato mostrato in
+figura \ref{fig:rowbump}
 
 \begin{alltt}
-\emph{rec\_bump\_row} (r, x, i) :=
-if (x >= last (r)) then [append (r, [x]), 0]
-else if ((i > 0) and (x < r[i])) then \emph{rec\_bump\_row} (r, x, i-1)
-else block (
-  [next\_x],
-  next\_x : r[i+1],
-  r[i+1] : x,
-  return ([r, next\_x]));
-
-\emph{rec\_ytableau\_word\_bump} (t, x, i) :=
-if (x > 0) then block (
-  [],
-  if (i > 0) then block (
-    [next\_b],
-    next\_b : \emph{rec\_bump\_row} (t[i], x, length (t[i])),
-    t[i] : next\_b[1],
-    return (\emph{rec\_ytableau\_word\_bump} (t, next\_b[2], i-1)))
-  else return (append ([[x]], t)))
-else t;
+\emph{rec\_ytableau\_word\_bump} ([[7],[6,8],[4,7,7],[2,4,5,6],[1,1,2,5]], 1, 5)
+\(\rightarrow\) [[7,8],[6,7],[4,4,7],[2,2,5,6],[1,1,1,5]]
 \end{alltt}
 
 \begin{oss}
@@ -254,7 +209,7 @@ $T \cdot U = (( \ldots ((T \gets x_1) \gets x_2 ) \gets \ldots ) \gets x_{s-1} )
 \caption{Prodotto di due tableaux}
 \label{fig:tab_prod}
 \end{figure}
-\newpage
+
 \begin{oss}
 Il prodotto di tableaux non \`e commutativo, infatti ad esempio
 \begin{center}
@@ -266,7 +221,7 @@ Il prodotto di tableaux non \`e commutativo, infatti ad esempio
 
 \begin{prop}\label{tableaux_monoid}
 L'insieme dei tableaux con l'operazione di prodotto \`e un monoide con
-unit\`a il tableau vuoto $T \cdot \varnothing = \varnothing \cdot T = T$.
+unit\`a data dal tableau vuoto che indichiamo con $\varnothing$.
 \end{prop}
 
 La dimostrazione di questo fatto richiede l'introduzione di alcuni
@@ -282,9 +237,8 @@ Ad esempio la parola associata al tableau ottenuto nel prodotto di
 figura \ref{fig:tab_prod} \`e $87766447225511123$.
 
 \begin{alltt}
-\emph{word\_from\_ytableau} (l, t) :=
-if (not emptyp (t)) then \emph{word\_from\_ytableau} (append (l, t[1]), rest (t, 1))
-else l;
+\emph{word\_from\_ytableau} ([],[[8],[7,7],[6,6],[4,4,7],[2,2,5,5],[1,1,1,2,3]])
+\(\rightarrow\) [8,7,7,6,6,4,4,7,2,2,5,5,1,1,1,2,3]
 \end{alltt}
 
 \begin{oss}
@@ -294,18 +248,8 @@ ottengono leggendo la parola da sinistra verso destra e interrompendo
 ogni volta in cui una lettera \`e strettamente minore della
 precedente.
 \begin{alltt}
-\emph{ytableau\_from\_word} (l,t) :=
-if ((not emptyp (l)) and (not emptyp (t))) then block (
-  if (last (t[1])) <= l[1] then block (
-    t[1] : append (t[1], [l[1]]),
-    return (\emph{ytableau\_from\_word} (rest (l, 1), t)))
-  else block (
-    t : append ([[l[1]]], t),
-    return (\emph{ytableau\_from\_word} (rest (l, 1), t))))
-else if (not emptyp (l)) then block (
-  t : [[l[1]]],
-  return (\emph{ytableau\_from\_word} (rest (l, 1), t)))
-else reverse (t);
+\emph{ytableau\_from\_word} ([8,7,7,6,6,4,4,7,2,2,5,5,1,1,1,2,3], [])
+\(\rightarrow\) [[8],[7,7],[6,6],[4,4,7],[2,2,5,5],[1,1,1,2,3]]
 \end{alltt}
 \end{oss}
 
@@ -392,7 +336,6 @@ con il row bumping, infatti
 
 \begin{figure}[h]
 \centering
-
 \begin{subfigure}[b]{0.3\textwidth}
 \centering
 \includegraphics[height=0.2\textwidth]{KnuthK1}\\
@@ -404,10 +347,10 @@ con il row bumping, infatti
 \includegraphics[height=0.2\textwidth]{KnuthK2}\\
 \eqref{k2} $y \leq x < z$
 \end{subfigure}
-
 \caption{Trasformazioni fondamentali}
 \end{figure}
 \end{oss}
+\FloatBarrier
 
 \begin{prop}\label{word_bump_equiv}
 Siano $T$ un tableau e $x$ un intero positivo, allora $w(T \gets x) = w(T)

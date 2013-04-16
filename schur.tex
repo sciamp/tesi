@@ -4,30 +4,32 @@
 Data una partizione $\lambda \vdash n$ (i.e. un diagramma di Young
 $\lambda = (n_1, \ldots, n_m)$) in $m$ parti (e quindi il diagramma ha
 $m$ righe) e un qualunque tableau $T$ che riempie $\lambda$ indichiamo
-con $x^T = \prod\limits_{i = 1}^m x^{c(i)}$. Sommando al variare di
+con $x^T = \prod\limits_{i = 1}^m x^{c(i)}$, dove $c(i)$ \`e il numero
+di volte che l'entrata $i$ compare nel tableau $T$. Sommando al variare di
 $T$ fra i possibili riempimenti di $\lambda$ otteniamo
 \begin{math}
 s_\lambda(x_1,\ldots,x_m) = \sum x^T
 \end{math}
 che chiameremo polinomio di Schur.
 \end{defn}
-
+I polinomi di Schur sono simmetrici e costituiscono una base
+dell'anello dei polinomi simmetrici.
 \section{Anello dei tableau}
 
-Sia $W_{[m]}$ l'insieme delle parole sull'alfabeto $[m]$ e sia
+Sia $W_{[m]}$ l'insieme delle parole sull'alfabeto $[m]=\{1,\ldots,m\}$ e sia
 $\sim_K$ la relazione di Knuth-equivalenza. $M_{[m]} =
 \frac{W_{[m]}}{\sim_K}$ \`e l'insieme delle classi di equivalenza,
 definiamo in $M_{[m]}$ un'operazione di prodotto attraverso la giustapposizione di parole e
-osseriviamo che \`e ben definito, infatti se $v \sim_K v'$ e $u \sim_K
+osserviamo che \`e ben definito, infatti se $v \sim_K v'$ e $u \sim_K
 u'$ si ha $v \cdot u \sim_K v' \cdot u \sim_K v \cdot u'$. In
 definitiva $(M, \cdot, \varnothing)$, dove $\varnothing$ \`e la
 parola vuota, \`e un monoide che, per il
 teorema \ref{knuth_equiv_word}, possiamo identificare con il monoide
 dei tableaux.
 
-Il monoide $M$ ha un anello associato (per i dettagli ~\cite{lang2002algebra}) che chiameremo \emph{anello dei tableaux}, e indicheremo con
+Il monoide $M$ ha un anello associato (per i dettagli si veda ~\cite{lang2002algebra}) che chiameremo \emph{anello dei tableaux}, e indicheremo con
 $R_{[m]}$ e che \`e uno $\mathbb{Z}$-modulo libero generato dai
-tableaux ad entrate in $[m]$ con prodotto il prodotto di tableaux.
+tableaux ad entrate in $[m]$ con prodotto indotto dal prodotto di tableaux.
 Resta quindi definito un omomorfismo
 \begin{equation}
 \begin{matrix}\label{ring_tab}
@@ -41,72 +43,26 @@ $\psi(S_\lambda[m])=s_\lambda(x_1,\ldots,x_m)$ \`e il polinomio di
 Schur corrispondente alla partizione $\lambda$ con $m$ variabili.
 
 \section{Implementazione dei polinomi di Schur}
-
+Nella nostra implementazione possiamo determinare l'immagine tramite
+\eqref{ring_tab} di un tableau con la funzione
+\texttt{\emph{yschur\_monomial\_word\_recursive}}
 \begin{alltt}
-\emph{yschur\_monomial\_word\_recursive} (flat\_w, mon, i) := block (
-  [x],
-  if (i>0) then return (\emph{yschur\_monomial\_word\_recursive} (flat\_w,
-                                                        mon*x[flat\_w[i]],
-                                                        i-1))
-  else return (mon));
-
-\emph{last\_or\_zero} (l) := if emptyp (l) then 0 else last(l);
-
-
-\emph{fill\_next\_line} (len, m, prev, ls) := block (
-  [],
-  if (len = 0) then return (ls)
-  else block (
-    [p],
-    p : [],
-    for x in ls do p : append (p,
-                               makelist (append (x, [y]),
-                               y,
-                               max (\emph{last\_or\_zero} (x) + 1,
-                                    prev[length (x)+1]),
-                               m - len + 1)),
-    return (\emph{fill\_next\_line} (len - 1, m, prev, p))));
-
-
-\emph{fl\_fill\_line} (len, m, ls) :=
-if (len=0) then ls
-else \emph{fl\_fill\_line} (len-1, m, xreduce ('append, 
-                                       makelist (makelist (append (x, [y]),
-                                                 y,
-                                                 \emph{last\_or\_zero} (x) + 1,
-                                                 m - len +1), x,
-                                                 ls)));
-
-\emph{fl\_list\_transposed\_ytableaux} (shape, level, m, ts) :=
-if level < length (shape) then
-  if level > 0 then
-    if not emptyp (flatten (ts)) then block (
-      [nls,ts\_first],
-      ts\_first : first (ts),
-      ts : delete (ts\_first, ts),
-      nls : \emph{fill\_next\_line} (shape [level+1], m,
-                            rest (ts\_first, -length(ts\_first)+shape[level]),
-                            [[]]),
-      ts : append (ts, map (lambda ([x], append (x, ts\_first)), nls)),
-      if every (lambda ([x],
-                        is (length (flatten (x)) = length (flatten
-                        (first (ts))))),
-                ts) then level : (level + 1),
-      \emph{fl\_list\_transposed\_ytableaux} (shape, level, m, ts))
-    else []
-  else \emph{fl\_list\_transposed\_ytableaux} (shape, level + 1, m,
-                                     \emph{fl\_fill\_line} (shape[level + 1], m, ts))
-else ts;
-
-\emph{fl\_better\_yschur\_polynomial} (d, m) := block (
-  [ts, pol, shape],
-  shape : reverse (\emph{ydiagram\_transpose\_rows} (d)),
-  ts : \emph{fl\_list\_transposed\_ytableaux} (shape, 0, m, [[]]),
-  pol : 0,
-  for i : 1 thru length (ts) do
-    pol : pol + \emph{yschur\_monomial\_word\_recursive} (ts[i], 1, length (ts[i])),
-  return (pol));
-\end{alltt}
+t:[7,6,8,4,7,7,2,4,5,6,1,1,2,5]
+\emph{yschur\_monomial\_word\_recursive} (t, 1, length (t))
+\(\rightarrow x\sb1\sp2 x\sb2\sp2 x\sb4\sp2 x\sb5\sp2 x\sb6\sp2 x\sb7\sp3 x\sb8\) 
+\end{alltt} 
+e la funzione \emph{fl\_better\_yschur\_polynomial} per calcolare il
+polinomio di Schur associato ad una partizione. Ad esempio nel caso della partizione
+$(2,3)$ con quattro indeterminate si ha\\
+\texttt{\emph{fl\_better\_yschur\_polynomial} ([2,3], 4)}
+che ci d\`a
+\begin{align*}
+&x_{3}^2\,x_{4}^3+x_{2}\,x_{3}\,x_{4}^3+x_{1}\,x_{3}\,x_{4}^3+x_{2}^2\,x_{4}^3+x_{1}\,x_{2}\,x_{4}^3+x_{1}^2\,x_{4}^3+x_{3}^3\,x_{4}^2+2\,x_{2}\,x_{3}^2\,x_{4}^2+2\,x_{1}\,x_{3}^2\,x_{4}^2+&\\
+&+2\,x_{2}^2\,x_{3}\,x_{4}^2+3\,x_{1}\,x_{2}\,x_{3}\,x_{4}^2+2\,x_{1}^2\,x_{3}\,x_{4}^2+x_{2}^3\,x_{4}^2+2\,x_{1}\,x_{2}^2\,x_{4}^2+2\,x_{1}^2\,x_{2}\,x_{4}^2+x_{1}^3\,x_{4}^2+x_{2}\,x_{3}^3\,x_{4}+&\\
+&+x_{1}\,x_{3}^3\,x_{4}+2\,x_{2}^2\,x_{3}^2\,x_{4}+3\,x_{1}\,x_{2}\,x_{3}^2\,x_{4}+2\,x_{1}^2\,x_{3}^2\,x_{4}+x_{2}^3\,x_{3}\,x_{4}+3\,x_{1}\,x_{2}^2\,x_{3}\,x_{4}+3\,x_{1}^2\,x_{2}\,x_{3}\,x_{4}+&\\
+&+x_{1}^3\,x_{3}\,x_{4}+x_{1}\,x_{2}^3\,x_{4}+2\,x_{1}^2\,x_{2}^2\,x_{4}+x_{1}^3\,x_{2}\,x_{4}+x_{2}^2\,x_{3}^3+x_{1}\,x_{2}\,x_{3}^3+x_{1}^2\,x_{3}^3+x_{2}^3\,x_{3}^2+2\,x_{1}\,x_{2}^2\,x_{3}^2+&\\
+&+2\,x_{1}^2\,x_{2}\,x_{3}^2+x_{1}^3\,x_{3}^2+x_{1}\,x_{2}^3\,x_{3}+2\,x_{1}^2\,x_{2}^2\,x_{3}+x_{1}^3\,x_{2}\,x_{3}+x_{1}^2\,x_{2}^3+x_{1}^3\,x_{2}^2
+\end{align*}
 
 Il cuore dell'algoritmo risiede nella funzione
 \emph{fl\_list\_transposed\_ytableaux} che calcola tutti i
@@ -134,74 +90,75 @@ funzione \emph{yschur\_monomial\_word\_recursive} calcola il
 corrispondente monomio, la somma di questi monomi \`e il polinomio di
 Schur cercato $s_\lambda(x_1,\ldots,x_m)$.
 
-% Non sono sicuro di doverne parlare. Per ora lascio in sospeso.
-\section{Corrispondenza di Robinson-Schensted-Knuth}
-Data una parola $w=x_1\ldots x_r$ indichiamo con $P(w)$ l'\emph{unico} tableau con
-parola Knuth-equivalente a $w$ (teorema \ref{knuth_equiv_word}). Un
-modo per ottenede $P(w)$ data $w$ \`e la \emph{procedura canonica}
-vista nel capitolo precedente. Mentre costruiamo il tableau $P(w)$
-teniamo traccia delle posizioni in cui stiamo inserendo le lettere di
-$w$ costruendo un'altra tabella $Q(w)$ della stessa forma di $P(w)$
-inserendo $k$ in posizione $Q(w)^i_j$ ogniqualvolta inseriamo $x_k$
-nella riga $i$-esima alla colonna $j$-esima del tableau $P(w)$. Dunque
-se stiamo costruendo $P_k=P(x_1\ldots x_k)=P_{k-1} \gets x_k =
-((\ldots (\varnothing \gets x_1) \gets \ldots ) \gets x_{k-1} ) \gets
-x_k$ inseriremo $k$ in $Q_k=Q(x_1 \ldots x_k)$ in corrispondenza della posizione
-presente in $P_k$ ma non in $P_{k-1}$.
+%% % Non sono sicuro di doverne parlare. Per ora lascio in sospeso.
+%% \section{Corrispondenza di Robinson-Schensted-Knuth}\label{RSKcorr}
+%% Data una parola $w=x_1\ldots x_r$ indichiamo con $P(w)$ l'\emph{unico} tableau con
+%% parola Knuth-equivalente a $w$ (teorema \ref{knuth_equiv_word}). Un
+%% modo per ottenede $P(w)$ data $w$ \`e la \emph{procedura canonica}
+%% vista nel capitolo precedente. Mentre costruiamo il tableau $P(w)$
+%% teniamo traccia delle posizioni in cui stiamo inserendo le lettere di
+%% $w$ costruendo un'altra tabella $Q(w)$ della stessa forma di $P(w)$
+%% inserendo $k$ in posizione $Q(w)^i_j$ ogniqualvolta inseriamo $x_k$
+%% nella riga $i$-esima alla colonna $j$-esima del tableau $P(w)$. Dunque
+%% se stiamo costruendo $P_k=P(x_1\ldots x_k)=P_{k-1} \gets x_k =
+%% ((\ldots (\varnothing \gets x_1) \gets \ldots ) \gets x_{k-1} ) \gets
+%% x_k$ inseriremo $k$ in $Q_k=Q(x_1 \ldots x_k)$ in corrispondenza della posizione
+%% presente in $P_k$ ma non in $P_{k-1}$.
 
-\begin{oss}
-Ad ogni passo $1 \leq k \leq r$ della procedura canonica, $Q_k$ \`e un
-tableau standard.
-%% \begin{proof}
-%% Chiaramente le entrate di $Q(w)$ sono tutte distinte fra loro essendo
-%% indici delle lettere della parola $w$. Supponiamo che $Q_k$ sia un
-%% tableau standard, si hanno tre casi:\\
-%% $x_k < x_{k+1}$: \\
-%% $x_k = x_{k+1}$:\\
-%% $x_k > x_{k+1}$:\\
-%% \end{proof}
-\end{oss}
+%% \begin{oss}
+%% Ad ogni passo $1 \leq k \leq r$ della procedura canonica, $Q_k$ \`e un
+%% tableau standard.
+%% %% \begin{proof}
+%% %% Chiaramente le entrate di $Q(w)$ sono tutte distinte fra loro essendo
+%% %% indici delle lettere della parola $w$. Supponiamo che $Q_k$ sia un
+%% %% tableau standard, si hanno tre casi:\\
+%% %% $x_k < x_{k+1}$: \\
+%% %% $x_k = x_{k+1}$:\\
+%% %% $x_k > x_{k+1}$:\\
+%% %% \end{proof}
+%% \end{oss}
 
-Essendo note le posizioni in cui sono state inserite le varie lettere,
-da $(P(w),Q(w))$ possiamo ricostruire $w$, questo significa che data
-una qualunque coppia di tableaux $(P,Q)$ che riempiono lo stesso
-diagramma con $Q$ standard esiste una parola $\bar w$ tale che
-$(P,Q)=(P(\bar w),Q(\bar w))$.
+%% Essendo note le posizioni in cui sono state inserite le varie lettere,
+%% da $(P(w),Q(w))$ possiamo ricostruire $w$, questo significa che data
+%% una qualunque coppia di tableaux $(P,Q)$ che riempiono lo stesso
+%% diagramma con $Q$ standard esiste una parola $\bar w$ tale che
+%% $(P,Q)=(P(\bar w),Q(\bar w))$.
 
-Abbiamo cos\`i una corrispondenza
-biunivoca fra le lettere $w$ di lunghezza $r$ con lettere
-nell'alfabeto $[n]$ e le coppie $(P,Q)$ di tableaux riempimenti dello
-stesso diagramma $\lambda \vdash r$ con $P$ ad entrate in $[n]$ e $Q$
-standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
-tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
-\`e uno standard tableau e viceversa.
+%% Abbiamo cos\`i una corrispondenza
+%% biunivoca fra le parole $w$ di lunghezza $r$ con lettere
+%% nell'alfabeto $[n]$ e le coppie $(P,Q)$ di tableaux riempimenti dello
+%% stesso diagramma $\lambda \vdash r$ con $P$ ad entrate in $[n]$ e $Q$
+%% standard. Nel caso particolare in cui $r=n$ e le lettere di $w$ siano
+%% tutte diverse una dall'altra, ovvero $w \in S_n$, si ha che anche $P$
+%% \`e uno standard tableau e viceversa.
 
-\begin{notaz}[Vettore doppio]
-Chiamiamo vettore doppio una matrice $2 \times n$. 
-\end{notaz}
+%% \begin{notaz}[Vettore doppio]
+%% Chiamiamo vettore doppio una matrice $2 \times n$. 
+%% \end{notaz}
 
-Knuth generalizz\`o questa corrispondenza ad una qualunque coppia di
-tableau $(P,Q)$, che riempiono lo stesso diagramma, con $P$ ad entrate
-in $[n]$ e $Q$ in $[m]$. In questo caso si ha la corrispondenza fra le
-coppie $(P,Q)$ e i \emph{vettori doppi}
-\begin{math}
-\begin{bmatrix}
-u_1 & \ldots & u_m\\
-v_1 & \ldots & v_m
-\end{bmatrix}
-\end{math}.
+%% \begin{defn}
+%% Un vettore doppio
+%% \begin{math}
+%% \begin{bmatrix}
+%% u_1 & \ldots & u_m\\
+%% v_1 & \ldots & v_m
+%% \end{bmatrix}
+%% \end{math}
+%% si dice in ordine lessicografico se valgono:
+%% \begin{enumerate}[(i)]
+%% \item $u_1 \leq \ldots \leq u_n$;
+%% \item $v_i \leq v_{i+1}$ se $u_1 = u_{i+1}$.
+%% \end{enumerate}
+%% \end{defn}
 
-\begin{defn}
-Un vettore doppio
-\begin{math}
-\begin{bmatrix}
-u_1 & \ldots & u_m\\
-v_1 & \ldots & v_m
-\end{bmatrix}
-\end{math}
-si dice in ordine lessicografico se valgono:
-\begin{enumerate}[(i)]
-\item $u_1 \leq \ldots \leq u_n$;
-\item $v_i \leq v_{i+1}$ se $u_1 = u_{i+1}$.
-\end{enumerate}
-\end{defn}
+%% Knuth generalizz\`o (per i dettagli si veda ~\cite{fulton1997young})
+%% la corrispondenza precedente ad una qualunque coppia di
+%% tableau $(P,Q)$, che riempiono lo stesso diagramma, con $P$ ad entrate
+%% in $[n]$ e $Q$ in $[m]$. In questo caso si ha la corrispondenza fra le
+%% coppie $(P,Q)$ e i \emph{vettori doppi} in ordine lessicografico
+%% \begin{math}
+%% \begin{bmatrix}
+%% u_1 & \ldots & u_m\\
+%% v_1 & \ldots & v_m
+%% \end{bmatrix}
+%% \end{math}.
