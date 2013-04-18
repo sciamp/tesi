@@ -5,8 +5,11 @@ bib		= bibliografia
 images_dir	= images
 eps_images	= $(wildcard $(images_dir)/*.eps)
 pdf_images	= $(patsubst $(images_dir)/%.eps, $(images_dir)/%.pdf, $(eps_images))
+slides		= presentazione
+slides_tex	= $(slides).tex
+slides_pdf	= $(slides).pdf
 
-.PHONY: clean pdf img pdfbib
+.PHONY: clean pdf img pdfbib pdfslides
 
 img: $(pdf_images)
 
@@ -19,6 +22,11 @@ pdfbib: pdf bib
 
 bib:
 	@bibtex $(mainfile)
+
+pdfslides: $(slides_pdf)
+
+$(slides_pdf): img $(slides_tex) $(img)
+	@pdflatex $(slides_tex)
 
 pdf: $(mainfile_pdf)
 
