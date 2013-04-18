@@ -12,7 +12,7 @@ s_\lambda(x_1,\ldots,x_m) = \sum x^T
 \end{math}
 che chiameremo polinomio di Schur.
 \end{defn}
-I polinomi di Schur sono simmetrici e costituiscono una base
+Vale la pena ricordare che i polinomi di Schur sono simmetrici e costituiscono una base
 dell'anello dei polinomi simmetrici.
 \section{Anello dei tableau}
 
@@ -79,12 +79,12 @@ attingendo da $[m]=\{1,\ldots, m\}$ in modo tale che se inseriamo $k \in
 $k_1,\ldots,k_{l_1-1} \in [m]$ tutti maggiori di $k$. Generiamo quindi
 una lista di possibili riempimenti della prima riga, ognuno dei quali
 dar\`a luogo ad una lista di possibili riempimenti delle prime due
-righe, e cos\`i via.\\ 
+righe, e cos\`i via.
 Naturalmente riempiendo la riga $j$-esima, alla
 posizione $i$ dovremo scegliere $k \in [m]$ tale che esistano
 $k_1,\ldots,k_{l_j-1} \in [m]$ tutti maggiori di $k$ e tutti non
 minori dell'elemento in posizione $i$-esima della riga
-$(j-1)$-esima.\\
+$(j-1)$-esima.
 Ottenuta infine la lista dei possibili tableaux su $\lambda$ la
 funzione \emph{yschur\_monomial\_word\_recursive} calcola il
 corrispondente monomio, la somma di questi monomi \`e il polinomio di

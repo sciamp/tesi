@@ -87,7 +87,7 @@ $T' = ((\ldots (T \gets v_1) \gets \ldots ) \gets v_{m-1} ) \gets v_m$ e
 collochiamo successivamente gli $u_1, \ldots, u_m$ in un diagramma
 vuoto nelle posizioni occupate dai corrispettivi $v_i$ in $T'$,
 otteniamo quindi uno skew tableu $S$.\\
-Lo skew tableau $S$ si rettifica a $Rect(S)=Q$.
+Allora lo skew tableau $S$ si rettifica a $Rect(S)=Q$.
 \end{prop}
 
 \section{I numeri di Littlewood-Richardson}
@@ -234,8 +234,10 @@ lista dei possibili diagrammi che sono riempiti dai tableaux che si
 ottengono come prodotto di tutti i possibili tableaux su \texttt{e} e
 \texttt{u} attaccando al primo un numero di box pari alla dimensione
 di \texttt{u} in tutte le posizioni possibili:
-\texttt{ds:unique (\emph{yshape\_product} ([[e,3]]))}. Calcoliamo
-quindi tutti i possibili skew diagram che si ottengono da ogni
+\begin{alltt}
+ds:unique (\emph{yshape\_product} ([[e,3]])).
+\end{alltt}
+Calcoliamo quindi tutti i possibili skew diagram che si ottengono da ogni
 diagramma della lista \texttt{ds} e dal diagramma \texttt{e},
 tasponiamoli, e riempiamone la prima colonna:
 \begin{alltt}

@@ -120,7 +120,7 @@ diagramma $\lambda$ ma non in $\mu$ che quindi fa effettivamente parte
 dello skew diagram. Dati due diagrammi possiamo calcolare lo skew
 diagram attraverso la funzione\\
 \texttt{\emph{generic\_skew\_tableau} (rev\_big\_shape,rev\_small\_shape,gen\_skew\_tab,curr)}.
-Ad esempio per calcolare lo skew diagram $\lambda \ \mu$ originato da
+Ad esempio per calcolare lo skew diagram $\lambda / \mu$ originato da
 $\lambda=(2,3,4,5)$ e $\mu=(1,3,3)$
 
 \begin{alltt}
@@ -164,7 +164,7 @@ $t$ \`e un tableau, $x$ \`e l'elemento che stiamo inserendo e $i$ il
 numero di righe del tableau, esegue il row bumping
 fino a quando \`e possibile, e se necessario aggiunge una nuova riga
 al tableau $t$. Ad esempio possiamo ottenere il risultato mostrato in
-figura \ref{fig:rowbump}
+figura \ref{fig:rowbump} con
 
 \begin{alltt}
 \emph{rec\_ytableau\_word\_bump} ([[7],[6,8],[4,7,7],[2,4,5,6],[1,1,2,5]], 1, 5)
@@ -258,8 +258,7 @@ Se $u$ e $v$ sono due parole, scriviamo $u \leq v$ se ogni
 \emph{ogni} lettera che occorre in $u$ \`e minore o uguale di \emph{ogni} lettera
 che occorre in $v$. Se invece $u$ \`e una parola e $x$ un intero
 positivo scriviamo $u \leq x$ se ogni lettera che occorre in $u$ \`e
-minore o uguale di $x$.\\
-Analogamente per le disuguaglianze inverse e quelle in senso stretto. 
+minore o uguale di $x$. Analogamente per le disuguaglianze inverse e quelle in senso stretto. 
 \end{notaz}
 
 La cosa interessante \`e l'effetto del row bumping sulla
